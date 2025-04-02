@@ -3,45 +3,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Weekly Schedule</title>
+    <title>Interactive Weekly Schedule</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         /* Style for active tab */
         .tab-active {
-            border-bottom-width: 2px;
             border-color: #3b82f6; /* blue-500 */
             color: #3b82f6;
             font-weight: 600;
         }
+        /* Modal styles */
+        .modal { display: none; /* Hidden by default */ }
+        .modal.active { display: flex; /* Show when active */ }
+
         /* Simple scrollbar styling (optional) */
-        ::-webkit-scrollbar {
-            width: 6px;
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #888; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #555; }
+
+        /* Minimal button styling for actions */
+        .action-btn {
+            padding: 2px 6px; margin-left: 4px; border-radius: 4px; font-size: 0.75rem; line-height: 1rem; cursor: pointer; transition: background-color 0.2s;
         }
-        ::-webkit-scrollbar-track {
-            background: #f1f1f1;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #888;
-            border-radius: 3px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #555;
-        }
+        .btn-edit { background-color: #e0e7ff; color: #3730a3; } .btn-edit:hover { background-color: #c7d2fe; }
+        .btn-delete { background-color: #fee2e2; color: #991b1b; } .btn-delete:hover { background-color: #fecaca; }
+        .btn-move { background-color: #f0fdf4; color: #166534; } .btn-move:hover { background-color: #dcfce7; }
+        .btn-pomodoro { background-color: #ffedd5; color: #9a3412; } .btn-pomodoro:hover { background-color: #fed7aa; }
+
     </style>
 </head>
 <body class="bg-gray-100 font-sans">
     <div class="container mx-auto p-4 max-w-4xl">
-        <header class="bg-white rounded-lg shadow p-4 mb-4 flex flex-col sm:flex-row justify-between items-center">
-            <h1 class="text-2xl font-bold text-gray-800 mb-2 sm:mb-0">My Weekly Schedule</h1>
-            <div class="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 sm:space-x-4">
-                <div id="live-timer" class="text-lg font-medium text-gray-600 bg-gray-100 px-3 py-1 rounded">
+        <header class="bg-white rounded-lg shadow p-4 mb-4 flex flex-col md:flex-row justify-between items-center">
+            <h1 class="text-2xl font-bold text-gray-800 mb-3 md:mb-0">My Weekly Schedule</h1>
+            <div class="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 sm:space-x-2">
+                 <div id="live-timer" class="text-base font-medium text-gray-600 bg-gray-100 px-3 py-1 rounded mb-2 sm:mb-0 order-1 sm:order-none">
                     Loading...
                 </div>
-                <button id="download-ics" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded transition duration-150 ease-in-out text-sm">
-                    Download Week (.ics)
+                <div class="flex space-x-1 order-3 sm:order-none mt-2 sm:mt-0">
+                    <button id="load-storage-btn" title="Load from Browser" class="bg-blue-100 hover:bg-blue-200 text-blue-800 text-xs font-bold py-1 px-2 rounded">&#x1F4BE;</button>
+                    <button id="save-storage-btn" title="Save to Browser" class="bg-green-100 hover:bg-green-200 text-green-800 text-xs font-bold py-1 px-2 rounded">&#x1F4BE;</button> <button id="download-json-btn" title="Download JSON" class="bg-yellow-100 hover:bg-yellow-200 text-yellow-800 text-xs font-bold py-1 px-2 rounded">&#x2B07;</button> <label title="Upload JSON" class="bg-purple-100 hover:bg-purple-200 text-purple-800 text-xs font-bold py-1 px-2 rounded cursor-pointer">&#x2B06;<input type="file" id="upload-json-input" accept=".json" class="hidden"></label> </div>
+                 <button id="download-ics" title="Download Week (.ics)" class="bg-green-500 hover:bg-green-600 text-white font-bold py-1 px-3 rounded transition duration-150 ease-in-out text-sm order-2 sm:order-none">
+                    ICS
                 </button>
             </div>
         </header>
+
+        <div id="pomodoro-timer-area" class="bg-orange-100 border border-orange-300 p-3 rounded-lg shadow mb-4 hidden">
+            <h3 class="text-lg font-semibold text-orange-800 mb-2">Pomodoro Timer</h3>
+            <p class="text-sm text-orange-700 mb-2">For: <strong id="pomodoro-activity-name"></strong></p>
+            <div class="flex items-center justify-center space-x-4">
+                <div id="pomodoro-time-display" class="text-4xl font-mono font-bold text-orange-900">25:00</div>
+                <button id="pomodoro-start-btn" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded">Start</button>
+                <button id="pomodoro-stop-btn" class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded" disabled>Stop</button>
+                <button id="pomodoro-reset-btn" class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded">Reset</button>
+            </div>
+        </div>
 
         <div class="bg-white rounded-lg shadow mb-4 overflow-hidden">
             <nav class="flex flex-wrap border-b border-gray-200" aria-label="Tabs">
@@ -51,12 +69,70 @@
         </div>
 
         <div id="schedule-container" class="bg-white rounded-lg shadow p-4 min-h-[300px]">
-            <p class="text-gray-500">Select a day to view the schedule.</p>
+            </div>
+        <div class="mt-4 text-center">
+             <button id="add-activity-btn" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded transition duration-150 ease-in-out">
+                Add Activity to <span id="add-activity-day-label">Current Day</span>
+            </button>
         </div>
 
         <footer class="text-center text-gray-500 text-sm mt-6">
-            Schedule Viewer
+            Interactive Schedule Viewer
         </footer>
+    </div>
+
+    <div id="activity-modal" class="modal fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full items-center justify-center z-50">
+        <div class="relative mx-auto p-5 border w-full max-w-md shadow-lg rounded-md bg-white">
+            <div class="mt-3 text-center">
+                <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4" id="modal-title">Add/Edit Activity</h3>
+                <form id="activity-form" class="mt-2 px-7 py-3 space-y-3 text-left">
+                    <input type="hidden" id="modal-item-id"> <input type="hidden" id="modal-day"> <div>
+                        <label for="start_time" class="block text-sm font-medium text-gray-700">Start Time:</label>
+                        <input type="time" id="start_time" name="start_time" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                    </div>
+                    <div>
+                        <label for="end_time" class="block text-sm font-medium text-gray-700">End Time:</label>
+                        <input type="time" id="end_time" name="end_time" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                    </div>
+                     <div>
+                        <label for="activity" class="block text-sm font-medium text-gray-700">Activity:</label>
+                        <input type="text" id="activity" name="activity" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                    </div>
+                    <div>
+                        <label for="type" class="block text-sm font-medium text-gray-700">Type:</label>
+                        <select id="type" name="type" required class="mt-1 block w-full px-3 py-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                            <option value="Routine">Routine</option>
+                            <option value="Travel">Travel</option>
+                            <option value="Buffer">Buffer</option>
+                            <option value="University">University</option>
+                            <option value="Break">Break</option>
+                            <option value="Study_Review">Study_Review</option>
+                            <option value="Study_Prep">Study_Prep</option>
+                            <option value="Study_Intensive">Study_Intensive</option>
+                            <option value="Meal">Meal</option>
+                            <option value="Housework">Housework</option>
+                            <option value="Flexible">Flexible</option>
+                            <option value="Work">Work</option>
+                            <option value="Language">Language</option>
+                            <option value="Free_Time">Free_Time</option>
+                            <option value="Sleep">Sleep</option>
+                             <option value="Other">Other</option> </select>
+                    </div>
+                     <div>
+                        <label for="details" class="block text-sm font-medium text-gray-700">Details:</label>
+                        <textarea id="details" name="details" rows="3" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"></textarea>
+                    </div>
+                </form>
+                <div class="items-center px-4 py-3">
+                    <button id="modal-save-btn" class="px-4 py-2 bg-blue-500 text-white text-base font-medium rounded-md w-auto shadow-sm hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-300">
+                        Save
+                    </button>
+                    <button id="modal-cancel-btn" class="px-4 py-2 bg-gray-200 text-gray-800 text-base font-medium rounded-md w-auto ml-2 shadow-sm hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-300">
+                        Cancel
+                    </button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script src="script.js"></script>
