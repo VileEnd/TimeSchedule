@@ -131,13 +131,58 @@ textarea:focus-visible {
 }
 
 /* Dark mode styles */
-@media (prefers-color-scheme: dark) {
-  .dark-mode-supported {
-    --bg-primary: #1f2937;
-    --bg-secondary: #111827;
-    --text-primary: #f3f4f6;
-    --text-secondary: #d1d5db;
-    --border-color: #374151;
-    --highlight-color: #3b82f6;
-  }
+.dark {
+  --bg-primary: #1f2937;
+  --bg-secondary: #111827;
+  --text-primary: #f3f4f6;
+  --text-secondary: #d1d5db;
+  --border-color: #374151;
+  --highlight-color: #3b82f6;
+}
+
+.dark body {
+  @apply bg-gray-900 text-white;
+}
+
+.dark .schedule-item {
+  @apply bg-gray-800 border-gray-700;
+}
+
+.dark .sortable-ghost {
+  @apply bg-gray-700 border-gray-600;
+}
+
+/* Pomodoro dark styles */
+.dark .bg-orange-100 {
+  @apply bg-orange-900;
+}
+
+.dark .border-orange-300 {
+  @apply border-orange-700;
+}
+
+.dark .bg-green-100 {
+  @apply bg-green-900;
+}
+
+.dark .border-green-300 {
+  @apply border-green-700;
+}
+
+.dark .bg-blue-100 {
+  @apply bg-blue-900;
+}
+
+.dark .border-blue-300 {
+  @apply border-blue-700;
+}
+
+/* Animations for dark mode */
+@keyframes pulse-dark {
+  0%, 100% { opacity: 0.7; background-color: #374151; }
+  50% { opacity: 0.9; background-color: #4B5563; }
+}
+
+.dark .animate-pulse-slow {
+  animation: pulse-dark 2s infinite;
 }

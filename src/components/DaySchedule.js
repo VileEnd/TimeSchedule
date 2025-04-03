@@ -60,7 +60,7 @@ const DaySchedule = () => {
       )}
 
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-lg font-semibold text-gray-700">{currentDay}'s Schedule</h2>
+        <h2 className="text-lg font-semibold text-gray-700 dark:text-gray-300">{currentDay}'s Schedule</h2>
         <div className="flex space-x-2">
           <LearningTimeMenu />
           <button 
@@ -74,13 +74,13 @@ const DaySchedule = () => {
       </div>
       
       <div 
-        className="bg-white rounded-lg shadow p-4 min-h-[300px]"
+        className="bg-white dark:bg-gray-800 rounded-lg shadow p-4 min-h-[300px]"
         role="tabpanel"
         id={`panel-${currentDay}`}
         aria-labelledby={`tab-${currentDay}`}
       >
         {activitiesWithIds.length === 0 ? (
-          <p className="text-gray-500 text-center py-6">
+          <p className="text-gray-500 dark:text-gray-400 text-center py-6">
             No activities scheduled. Click "Add Activity" above!
           </p>
         ) : (

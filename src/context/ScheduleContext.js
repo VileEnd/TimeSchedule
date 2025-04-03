@@ -189,6 +189,16 @@ export const ScheduleProvider = ({ children }) => {
       return false;
     }
   };
+  
+  const clearAllData = () => {
+    const emptySchedule = {};
+    daysOfWeek.forEach(day => {
+      emptySchedule[day] = [];
+    });
+    setScheduleData(emptySchedule);
+    saveToLocalStorage(emptySchedule);
+    return true;
+  };
 
   return (
     <ScheduleContext.Provider 
@@ -205,6 +215,7 @@ export const ScheduleProvider = ({ children }) => {
         reorderActivities,
         exportToJson,
         importFromJson,
+        clearAllData,
         saveToLocalStorage: () => saveToLocalStorage(scheduleData),
         loadFromStorage: initializeSchedule
       }}

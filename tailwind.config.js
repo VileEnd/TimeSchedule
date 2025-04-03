@@ -4,6 +4,7 @@ export default {
     "./src/**/*.{js,jsx,ts,tsx}",
     "./public/index.html"
   ],
+  darkMode: 'class',
   theme: {
     extend: {
       animation: {
@@ -15,6 +16,12 @@ export default {
           '0%, 100%': { boxShadow: '0 0 0 0 rgba(147, 51, 234, 0.4)' },
           '50%': { boxShadow: '0 0 0 3px rgba(147, 51, 234, 0.2)' },
         },
+      },
+      colors: {
+        // Custom colors for dark mode
+        'dark-primary': '#1F2937',
+        'dark-secondary': '#111827',
+        'dark-accent': '#4F46E5',
       },
     },
   },
