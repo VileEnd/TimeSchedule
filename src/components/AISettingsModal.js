@@ -97,9 +97,9 @@ const AISettingsModal = ({ onClose }) => {
   };
 
   return (
-    <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
-        <h2 className="text-xl font-semibold text-gray-800 mb-4">AI Settings</h2>
+    <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50 overflow-y-auto" style={{padding: '1rem'}}>
+      <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md dark:bg-gray-800 dark:text-white border border-gray-200 dark:border-gray-700">
+        <h2 className="text-xl font-semibold text-gray-800 dark:text-white mb-4">AI Settings</h2>
         
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
@@ -112,17 +112,17 @@ const AISettingsModal = ({ onClose }) => {
                 onChange={handleChange}
                 className="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded"
               />
-              <label htmlFor="isEnabled" className="ml-2 block text-sm text-gray-700">
+              <label htmlFor="isEnabled" className="ml-2 block text-sm text-gray-700 dark:text-gray-300">
                 Enable AI-powered scheduling
               </label>
             </div>
-            <p className="text-xs text-gray-500">
+            <p className="text-xs text-gray-500 dark:text-gray-400">
               Requires an OpenAI API key with access to the o3-mini model
             </p>
           </div>
           
           <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
               OpenAI API Key
             </label>
             <div className="flex">
@@ -131,19 +131,19 @@ const AISettingsModal = ({ onClose }) => {
                 name="apiKey"
                 value={formValues.apiKey}
                 onChange={handleChange}
-                className="flex-1 p-2 border border-gray-300 rounded-l-md shadow-sm focus:ring-purple-500 focus:border-purple-500"
+                className="flex-1 p-2 border border-gray-300 rounded-l-md shadow-sm focus:ring-purple-500 focus:border-purple-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                 placeholder="sk-..."
               />
               <button
                 type="button"
                 onClick={() => setIsApiKeyVisible(!isApiKeyVisible)}
-                className="px-3 py-2 bg-gray-200 text-gray-700 rounded-r-md hover:bg-gray-300"
+                className="px-3 py-2 bg-gray-200 text-gray-700 rounded-r-md hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
               >
                 {isApiKeyVisible ? "Hide" : "Show"}
               </button>
             </div>
             <div className="flex justify-between mt-2">
-              <p className="text-xs text-gray-500">
+              <p className="text-xs text-gray-500 dark:text-gray-400">
                 Your API key is stored locally in your browser
               </p>
               <button
@@ -152,8 +152,8 @@ const AISettingsModal = ({ onClose }) => {
                 disabled={isLoading || !formValues.apiKey}
                 className={`text-xs px-2 py-1 rounded ${
                   isLoading 
-                    ? 'bg-gray-300 text-gray-500 cursor-not-allowed' 
-                    : 'bg-blue-500 text-white hover:bg-blue-600'
+                    ? 'bg-gray-300 text-gray-500 cursor-not-allowed dark:bg-gray-600 dark:text-gray-400' 
+                    : 'bg-purple-500 text-white hover:bg-purple-600'
                 }`}
               >
                 {isLoading ? 'Testing...' : 'Test Connection'}
@@ -169,35 +169,35 @@ const AISettingsModal = ({ onClose }) => {
           </div>
           
           <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
               Model
             </label>
             <select
               name="model"
               value={formValues.model}
               onChange={handleChange}
-              className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-purple-500 focus:border-purple-500"
+              className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-purple-500 focus:border-purple-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
             >
               <option value="o3-mini">o3-mini</option>
             </select>
-            <p className="text-xs text-gray-500 mt-1">Currently only o3-mini is supported</p>
+            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Currently only o3-mini is supported</p>
           </div>
           
           <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
               Reasoning Effort
             </label>
             <select
               name="effort"
               value={formValues.effort}
               onChange={handleChange}
-              className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-purple-500 focus:border-purple-500"
+              className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-purple-500 focus:border-purple-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
             >
               <option value="high">High</option>
               <option value="medium">Medium</option>
               <option value="low">Low</option>
             </select>
-            <p className="text-xs text-gray-500 mt-1">
+            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
               High effort produces better quality schedules
             </p>
           </div>
@@ -206,7 +206,7 @@ const AISettingsModal = ({ onClose }) => {
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition-colors"
+              className="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition-colors dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600"
             >
               Cancel
             </button>

@@ -561,7 +561,7 @@ const AISmartSchedulerEnhanced = () => {
       </div>
       
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-96 bg-white rounded-lg shadow-xl z-30 p-4 border border-gray-200 dark:bg-gray-800 dark:border-gray-700 dark:text-white">
+        <div className="fixed sm:absolute inset-0 sm:inset-auto sm:right-0 max-h-screen overflow-y-auto sm:left-auto sm:mt-2 sm:mx-0 w-full sm:w-96 max-w-full bg-white rounded-lg shadow-xl z-30 p-4 border border-gray-200 dark:bg-gray-800 dark:border-gray-700 dark:text-white">
           <h3 className="text-lg font-semibold mb-3">
             AI-Powered Scheduling Tools
           </h3>
