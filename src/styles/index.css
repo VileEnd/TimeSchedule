@@ -1,0 +1,143 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Style for active tab */
+.tab-active {
+  border-color: #3b82f6; /* blue-500 */
+  color: #3b82f6;
+  font-weight: 600;
+}
+
+/* Modal styles */
+.modal { display: none; /* Hidden by default */ }
+.modal.active { display: flex; /* Show when active */ }
+
+/* Simple scrollbar styling (optional) */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: #f1f1f1; }
+::-webkit-scrollbar-thumb { background: #888; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #555; }
+
+/* Minimal button styling for actions */
+.action-btn {
+  padding: 2px 6px; 
+  margin-left: 4px; 
+  border-radius: 4px; 
+  font-size: 0.75rem; 
+  line-height: 1rem; 
+  cursor: pointer; 
+  transition: background-color 0.2s, transform 0.1s;
+}
+.btn-edit { background-color: #d1d8f7; color: #2a2574; } 
+.btn-edit:hover { background-color: #c7d2fe; transform: scale(1.05); }
+.btn-delete { background-color: #fecaca; color: #7f1d1d; } 
+.btn-delete:hover { background-color: #fca5a5; transform: scale(1.05); }
+.btn-pomodoro { background-color: #fed7aa; color: #7c2d12; } 
+.btn-pomodoro:hover { background-color: #fdba74; transform: scale(1.05); }
+
+/* Focus states for keyboard users */
+button:focus-visible, 
+.action-btn:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+/* Improved contrast for better accessibility */
+.text-gray-500 {
+  color: #64748b; /* Darker than default */
+}
+
+/* SortableJS helper classes */
+.sortable-ghost { /* Style for the placeholder */
+  background-color: #cfe2ff; /* Light blue background */
+  opacity: 0.7;
+  border: 1px dashed #9ec5fe;
+  animation: pulse 1.5s infinite ease-in-out;
+}
+.sortable-chosen { /* Style for the item being dragged */
+  box-shadow: 0 8px 15px -3px rgba(0, 0, 0, 0.15), 0 4px 6px -4px rgba(0, 0, 0, 0.1); /* Enhanced shadow */
+  transform: scale(1.03) rotate(1deg);
+  transition: transform 0.2s, box-shadow 0.2s;
+  z-index: 10;
+}
+.sortable-drag {
+  opacity: 0.75;
+  transform: rotate(1deg);
+}
+.schedule-item { /* Add cursor style for draggable items */
+  cursor: grab;
+  transition: all 0.2s ease-in-out;
+}
+.schedule-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+.schedule-item:active { /* Style when actively dragging */
+  cursor: grabbing;
+}
+
+/* Custom Animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideIn {
+  from { transform: translateY(-10px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.7; }
+  50% { opacity: 0.9; }
+}
+
+@keyframes pulse-purple {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(147, 51, 234, 0.4); }
+  50% { box-shadow: 0 0 0 3px rgba(147, 51, 234, 0.2); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.animate-slide-in {
+  animation: slideIn 0.3s ease-in-out;
+}
+
+.animate-pulse-slow {
+  animation: pulse 2s infinite;
+}
+
+.animate-pulse-purple {
+  animation: pulse-purple 2s infinite;
+}
+
+/* Screen reader only */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* Dark mode styles */
+@media (prefers-color-scheme: dark) {
+  .dark-mode-supported {
+    --bg-primary: #1f2937;
+    --bg-secondary: #111827;
+    --text-primary: #f3f4f6;
+    --text-secondary: #d1d5db;
+    --border-color: #374151;
+    --highlight-color: #3b82f6;
+  }
+}

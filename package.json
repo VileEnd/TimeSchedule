@@ -1,0 +1,66 @@
+{
+  "name": "time-schedule",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "homepage": "https://masterjames.github.io/TimeSchedule",
+  "dependencies": {
+    "@testing-library/jest-dom": "^6.4.2",
+    "@testing-library/react": "^14.2.1",
+    "@testing-library/user-event": "^14.5.2",
+    "date-fns": "^2.30.0",
+    "framer-motion": "^10.16.4",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-scripts": "^5.0.1",
+    "react-sortablejs": "^6.1.4",
+    "react-use": "^17.4.0",
+    "sortablejs": "^1.15.2",
+    "web-vitals": "^3.5.2"
+  },
+  "scripts": {
+    "start": "NODE_OPTIONS=--openssl-legacy-provider react-scripts start",
+    "build": "NODE_OPTIONS=--openssl-legacy-provider react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "serve": "NODE_OPTIONS=--openssl-legacy-provider node serve.js",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ],
+    "rules": {
+      "no-restricted-globals": [
+        "error",
+        {
+          "name": "event",
+          "message": "Use local parameter instead."
+        }
+      ],
+      "react-hooks/exhaustive-deps": "warn",
+      "import/no-unresolved": "off",
+      "import/extensions": "off"
+    }
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "autoprefixer": "^10.4.17",
+    "gh-pages": "^6.3.0",
+    "postcss": "^8.4.35",
+    "tailwindcss": "^3.4.1"
+  }
+}

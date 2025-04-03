@@ -300,8 +300,11 @@ document.addEventListener('DOMContentLoaded', () => {
         renderScheduleForDay(day); // Render items
 
         // Initialize SortableJS *after* rendering items for the new day
-         if (scheduleData[day] && scheduleData[day].length > 0) {
-            initSortable(day);
+        if (scheduleData[day] && scheduleData[day].length > 0) {
+            // Small delay to ensure DOM is fully ready
+            setTimeout(() => {
+                initSortable(day);
+            }, 10);
         }
     }
 
@@ -319,11 +322,15 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // Sort data array before rendering (important for consistency)
-        daySchedule.sort((a, b) => timeToMinutes(a.start_time) - timeToMinutes(b.start_time));
+        // Only sort on the very first render of a day
+        // If the data has already been loaded/sorted once, we preserve the user's manual ordering
+        if (!daySchedule[0].hasOwnProperty('id')) {
+            // First render - sort by time
+            daySchedule.sort((a, b) => timeToMinutes(a.start_time) - timeToMinutes(b.start_time));
+        }
 
         daySchedule.forEach((item, index) => {
-            // Use index as part of the ID *after* sorting
+            // Use index as part of the ID
             const itemId = `${day}-${index}`;
             item.id = itemId; // Store temporary ID for event listeners
 
@@ -424,7 +431,10 @@ document.addEventListener('DOMContentLoaded', () => {
             ghostClass: 'sortable-ghost',  // Class for the drop placeholder (style in HTML)
             chosenClass: 'sortable-chosen', // Class for the item being dragged
             // dragClass: 'sortable-drag', // Optional: Class for the clone
-
+            
+            // This is critical! Disabling this ensures custom order is kept
+            sort: true,  // Allow sorting (default is true)
+            
             onEnd: function (evt) {
                 // Ensure we're operating on the correct day's data
                 if (currentDay !== day) {
@@ -444,23 +454,14 @@ document.addEventListener('DOMContentLoaded', () => {
                         // Save the new order
                         saveToLocalStorage();
 
-                        // Re-assign temporary IDs based on new order IF NEEDED by listeners.
-                        // Crucially, we need to update the dataset.itemId on the moved elements in the DOM
-                        // or ensure findItemIndexById can still work.
-                        // Easiest might be to quickly re-render JUST the IDs or re-run listener attachments.
-
-                         // Option 1: Re-render (simplest, might flash)
-                         // renderScheduleForDay(day);
-                         // initSortable(day); // Re-init sortable if re-rendering
-
-                         // Option 2: Update IDs in data and DOM datasets (more complex, less flash)
-                         scheduleData[day].forEach((item, index) => { item.id = `${day}-${index}`; });
-                         scheduleContainer.querySelectorAll('.schedule-item').forEach((card, index) => {
-                            card.dataset.itemId = `${day}-${index}`;
-                         });
-                         // Re-attach listeners after DOM manipulation / ID updates
-                         addCardEventListeners(day);
-
+                        // Option 2: Update IDs in data and DOM datasets
+                        scheduleData[day].forEach((item, index) => { item.id = `${day}-${index}`; });
+                        scheduleContainer.querySelectorAll('.schedule-item').forEach((card, index) => {
+                           card.dataset.itemId = `${day}-${index}`;
+                        });
+                        
+                        // Re-attach listeners after DOM manipulation / ID updates
+                        addCardEventListeners(day);
                     } else {
                         console.error("Failed to find moved item in data array.");
                     }
@@ -568,10 +569,10 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             scheduleData[day].push(newItemData);
             console.log(`Added new item to ${day}`);
+            
+            // Only sort when adding new items, not when editing or after drag-drop
+            scheduleData[day].sort((a, b) => timeToMinutes(a.start_time) - timeToMinutes(b.start_time));
         }
-
-        // Sort the day's schedule again after adding/editing
-        scheduleData[day].sort((a, b) => timeToMinutes(a.start_time) - timeToMinutes(b.start_time));
 
         saveToLocalStorage();
         hideModal();
