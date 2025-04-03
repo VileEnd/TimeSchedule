@@ -29,6 +29,7 @@ const EnhancedPomodoroTimer = ({ activity, onClose }) => {
         clearInterval(timerRef.current);
       }
     };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [settings, mode]);
 
   const resetTimerForCurrentMode = () => {

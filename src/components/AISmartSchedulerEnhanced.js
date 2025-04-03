@@ -169,12 +169,7 @@ const AISmartSchedulerEnhanced = () => {
       // Instead, we'll skip the fetch and use the URL directly in the prompt
       // The AI can process the calendar URL pattern
       
-      // Simulate calendar data for now - we'll ask AI to fetch it directly
-      const calendarData = `Calendar URL: ${calendarUrl}
-      
-Please load this calendar directly and extract events from it.
-This is a public Google Calendar URL in iCal format.`;
-
+      // We'll ask AI to fetch the calendar directly from the URL
       console.log('Processing calendar URL:', calendarUrl);
       
       // Clear existing schedule

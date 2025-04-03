@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useSchedule } from '../context/ScheduleContext.js';
-import { useTheme } from '../context/ThemeContext.js';
-import { useAISettings } from '../context/AISettingsContext.js';
 import { generateICS } from '../utils.js';
 import ThemeToggle from './ThemeToggle.js';
 import AISmartScheduler from './AISmartScheduler.js';
@@ -15,8 +13,7 @@ const Header = () => {
     exportToJson, 
     importFromJson 
   } = useSchedule();
-  const { isDarkMode } = useTheme();
-  const { settings } = useAISettings();
+  // Removed unused imports
   
   const [currentTime, setCurrentTime] = useState('Loading...');
   const [saveFeedback, setSaveFeedback] = useState(false);

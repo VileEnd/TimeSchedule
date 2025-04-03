@@ -54,7 +54,7 @@ const findAvailableSlots = (daySchedule) => {
 
 // Analyze the slot and determine if it's suitable for learning
 const analyzeSlot = (slot, existingActivities, config) => {
-  const { durationMinutes, afterActivity, beforeActivity } = slot;
+  const { durationMinutes, afterActivity } = slot; // beforeActivity removed as unused
   
   // Skip slots that are too short
   if (durationMinutes < config.minimumLearningBlockMinutes) {
