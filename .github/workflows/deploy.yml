@@ -26,6 +26,8 @@ jobs:
         
       - name: Build 🏗️
         run: npm run build
+        env:
+          PUBLIC_URL: /TimeSchedule
         
       - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@v4
