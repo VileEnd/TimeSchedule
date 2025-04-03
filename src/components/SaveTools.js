@@ -66,7 +66,7 @@ const SaveTools = () => {
       </button>
       
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-56 rounded-lg bg-white dark:bg-gray-800 shadow-xl border border-gray-200 dark:border-gray-700 p-2 z-40">
+        <div className="fixed sm:absolute right-0 inset-0 sm:inset-auto sm:mt-2 overflow-y-auto max-h-[calc(100vh-4rem)] w-full sm:w-[320px] md:w-[350px] rounded-lg bg-white dark:bg-gray-800 shadow-xl border border-gray-200 dark:border-gray-700 p-4 z-40 dark:text-gray-100">
           <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 px-2">Save & Export</h3>
           
           <div className="grid grid-cols-1 gap-1">

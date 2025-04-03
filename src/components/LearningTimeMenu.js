@@ -80,23 +80,33 @@ const LearningTimeMenu = () => {
     <div className="relative">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="bg-purple-500 hover:bg-purple-600 text-white font-bold py-2 px-4 rounded transition-colors flex items-center"
+        className="bg-purple-500 hover:bg-purple-600 text-white font-bold py-2 px-3 rounded-full transition-colors flex items-center shadow-md hover:shadow-lg"
         aria-expanded={isOpen}
+        title="Learning Blocks"
       >
-        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
         </svg>
-        Auto Learning Blocks
       </button>
       
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-96 bg-white rounded-lg shadow-xl z-30 p-4 border border-gray-200">
-          <h3 className="text-lg font-semibold text-gray-800 mb-3">
+        <div className="fixed sm:absolute inset-0 sm:inset-auto sm:right-0 max-h-[calc(100vh-4rem)] overflow-y-auto sm:left-auto sm:mt-2 sm:mx-0 w-full sm:w-[320px] md:w-[350px] bg-white rounded-lg shadow-xl z-30 p-4 border border-gray-200 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100 relative">
+          <button
+            type="button"
+            onClick={() => setIsOpen(false)}
+            className="absolute top-3 right-3 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+            aria-label="Close"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+          <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-3">
             Auto Learning Block Settings
           </h3>
           
           <div className="mb-3">
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
               Daily Learning Goal (minutes)
             </label>
             <input
@@ -106,13 +116,13 @@ const LearningTimeMenu = () => {
               onChange={handleConfigChange}
               min="30"
               max="360"
-              className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-purple-500 focus:border-purple-500"
+              className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-purple-500 focus:border-purple-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
             />
           </div>
           
           <div className="grid grid-cols-2 gap-3 mb-3">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Min Block Duration
               </label>
               <input
@@ -122,12 +132,12 @@ const LearningTimeMenu = () => {
                 onChange={handleConfigChange}
                 min="15"
                 max="60"
-                className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-purple-500 focus:border-purple-500"
+                className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-purple-500 focus:border-purple-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
               />
             </div>
             
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Max Block Duration
               </label>
               <input
@@ -137,13 +147,13 @@ const LearningTimeMenu = () => {
                 onChange={handleConfigChange}
                 min="30"
                 max="180"
-                className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-purple-500 focus:border-purple-500"
+                className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-purple-500 focus:border-purple-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
               />
             </div>
           </div>
           
           <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
               Max Learning Blocks Per Day
             </label>
             <input
@@ -153,7 +163,7 @@ const LearningTimeMenu = () => {
               onChange={handleConfigChange}
               min="1"
               max="10"
-              className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-purple-500 focus:border-purple-500"
+              className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-purple-500 focus:border-purple-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
             />
           </div>
           
@@ -209,7 +219,7 @@ const LearningTimeMenu = () => {
           <div className="flex justify-end space-x-3 mt-4">
             <button
               onClick={() => setIsOpen(false)}
-              className="px-4 py-2 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400 transition-colors"
+              className="px-4 py-2 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400 transition-colors dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600"
             >
               Cancel
             </button>

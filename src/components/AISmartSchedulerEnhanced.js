@@ -561,7 +561,17 @@ const AISmartSchedulerEnhanced = () => {
       </div>
       
       {isOpen && (
-        <div className="fixed sm:absolute inset-0 sm:inset-auto sm:right-0 max-h-screen overflow-y-auto sm:left-auto sm:mt-2 sm:mx-0 w-full sm:w-96 max-w-full bg-white rounded-lg shadow-xl z-30 p-4 border border-gray-200 dark:bg-gray-800 dark:border-gray-700 dark:text-white">
+        <div className="fixed sm:absolute inset-0 sm:inset-auto sm:right-0 max-h-[calc(100vh-4rem)] overflow-y-auto sm:left-auto sm:mt-2 sm:mx-0 w-full sm:w-[320px] md:w-[350px] bg-white rounded-lg shadow-xl z-30 p-4 border border-gray-200 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100 relative">
+          <button
+            type="button"
+            onClick={() => setIsOpen(false)}
+            className="absolute top-3 right-3 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+            aria-label="Close"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
           <h3 className="text-lg font-semibold mb-3">
             AI-Powered Scheduling Tools
           </h3>

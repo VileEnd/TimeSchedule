@@ -293,18 +293,27 @@ const UnifiedAITools = () => {
     <div className="relative">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-medium py-2 px-4 rounded transition-all shadow-md hover:shadow-lg flex items-center"
+        className="bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white font-medium py-2 px-3 rounded-full shadow-md hover:shadow-lg transition-all flex items-center"
         aria-expanded={isOpen}
+        title="AI Tools"
       >
-        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
         </svg>
-        <span className="hidden sm:inline">AI Scheduler</span>
-        <span className="sm:hidden">AI</span>
       </button>
       
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-[320px] sm:w-[350px] bg-white dark:bg-gray-800 rounded-lg shadow-xl z-30 border border-gray-200 dark:border-gray-700 dark:text-gray-100 overflow-hidden">
+        <div className="fixed sm:absolute inset-0 sm:inset-auto sm:right-0 max-h-[calc(100vh-4rem)] overflow-y-auto sm:left-auto sm:mt-2 sm:mx-0 w-full sm:w-[320px] md:w-[350px] bg-white rounded-lg shadow-xl z-30 p-4 border border-gray-200 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100 relative">
+          <button
+            type="button"
+            onClick={() => setIsOpen(false)}
+            className="absolute top-3 right-3 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+            aria-label="Close"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
           {/* Tabs */}
           <div className="flex border-b border-gray-200 dark:border-gray-700">
             <button 
@@ -314,7 +323,7 @@ const UnifiedAITools = () => {
                   ? 'text-purple-600 border-b-2 border-purple-600 dark:text-purple-400 dark:border-purple-400' 
                   : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'
               }`}
-              aria-selected={activeTab === 'optimize'}
+              aria-current={activeTab === 'optimize' ? 'page' : undefined}
             >
               <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mx-auto mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
@@ -328,7 +337,7 @@ const UnifiedAITools = () => {
                   ? 'text-purple-600 border-b-2 border-purple-600 dark:text-purple-400 dark:border-purple-400' 
                   : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'
               }`}
-              aria-selected={activeTab === 'text'}
+              aria-current={activeTab === 'text' ? 'page' : undefined}
             >
               <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mx-auto mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h7" />
@@ -342,7 +351,7 @@ const UnifiedAITools = () => {
                   ? 'text-purple-600 border-b-2 border-purple-600 dark:text-purple-400 dark:border-purple-400' 
                   : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'
               }`}
-              aria-selected={activeTab === 'calendar'}
+              aria-current={activeTab === 'calendar' ? 'page' : undefined}
             >
               <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mx-auto mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
@@ -356,7 +365,7 @@ const UnifiedAITools = () => {
                   ? 'text-purple-600 border-b-2 border-purple-600 dark:text-purple-400 dark:border-purple-400' 
                   : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'
               }`}
-              aria-selected={activeTab === 'apikey'}
+              aria-current={activeTab === 'apikey' ? 'page' : undefined}
             >
               <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mx-auto mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />

@@ -78,16 +78,26 @@ const ActivityModal = ({ day, editIndex, onClose }) => {
 
   return (
     <div 
-      className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full flex items-center justify-center z-50"
+      className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50 overflow-y-auto"
       onClick={handleBackdropClick}
       style={{padding: '1rem'}}
     >
-      <div className="relative mx-auto p-5 w-full max-w-md shadow-lg rounded-lg bg-white dark:bg-gray-800 dark:text-white border border-gray-200 dark:border-gray-700">
-        <div className="mt-3 text-center">
-          <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-white mb-4">
-            {isEditing ? 'Edit Activity' : `Add Activity to ${day}`}
-          </h3>
-          <form className="mt-2 px-7 py-3 space-y-3 text-left" onSubmit={handleSubmit}>
+      <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md dark:bg-gray-800 dark:text-white border border-gray-200 dark:border-gray-700 relative">
+        <button
+          type="button"
+          onClick={onClose}
+          className="absolute top-3 right-3 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+          aria-label="Close"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+        <h3 className="text-xl font-semibold text-gray-800 dark:text-white mb-4 text-center">
+          {isEditing ? 'Edit Activity' : `Add Activity to ${day}`}
+        </h3>
+        
+        <form className="space-y-3 text-left" onSubmit={handleSubmit}>
             <div>
               <label htmlFor="start_time" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Start Time:</label>
               <div className="relative">
@@ -221,23 +231,22 @@ const ActivityModal = ({ day, editIndex, onClose }) => {
                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500 sm:text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white"
               ></textarea>
             </div>
-            <div className="items-center px-4 py-3 flex justify-center">
-              <button 
-                type="submit"
-                className="px-4 py-2 bg-purple-500 text-white text-base font-medium rounded-md w-auto shadow-sm hover:bg-purple-600 focus:outline-none focus:ring-2 focus:ring-purple-300"
-              >
-                Save
-              </button>
-              <button 
+            <div className="flex justify-end space-x-3 mt-6">
+              <button
                 type="button"
                 onClick={onClose}
-                className="px-4 py-2 bg-gray-200 text-gray-800 text-base font-medium rounded-md w-auto ml-2 shadow-sm hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-300 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600"
+                className="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition-colors dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600"
               >
                 Cancel
               </button>
+              <button 
+                type="submit"
+                className="px-4 py-2 bg-purple-500 text-white rounded-md hover:bg-purple-600 transition-colors"
+              >
+                Save
+              </button>
             </div>
           </form>
-        </div>
       </div>
     </div>
   );
