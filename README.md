@@ -12,6 +12,10 @@ An interactive weekly schedule application built with React and TailwindCSS.
 - Export schedule to ICS calendar format
 - Color coding of different activity types
 - Mobile-friendly responsive design
+- AI-powered schedule generation:
+  - Text description to schedule
+  - Calendar URL import
+  - Learning science optimization
 
 ## Installation
 
@@ -81,6 +85,22 @@ You can also manually deploy to GitHub Pages:
 - Export your schedule as JSON for backup
 - Generate an ICS file for importing into calendar applications
 
+## AI Features
+
+The application includes AI-powered scheduling that can:
+
+1. Generate schedules from text descriptions - provide a natural language description of your schedule
+2. Import and process calendar data from public iCal URLs
+3. Optimize study schedules using learning science principles like spaced repetition
+
+To use these features, you'll need an OpenAI API key.
+
+## Notes for GitHub Pages Deployment
+
+- The app is configured to run on the path `/TimeSchedule/`
+- Base href is dynamically set during build using the PUBLIC_URL environment variable
+- The GitHub workflow automatically handles deployment to gh-pages branch
+
 ## Technology Stack
 
 - React - Front-end framework
@@ -88,6 +108,7 @@ You can also manually deploy to GitHub Pages:
 - SortableJS (via react-sortablejs) - Drag-and-drop functionality
 - Context API - State management
 - ES Modules - JavaScript module system
+- OpenAI API - AI-powered scheduling features
 
 ## Project Structure
 
@@ -96,6 +117,7 @@ You can also manually deploy to GitHub Pages:
 - `/src/data` - Default schedule data
 - `/src/styles` - CSS and TailwindCSS styling
 - `/src/utils.js` - Utility functions for time calculations, etc.
+- `/src/services` - API integrations (OpenAI)
 
 ## License
 

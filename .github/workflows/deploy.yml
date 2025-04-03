@@ -24,13 +24,25 @@ jobs:
       - name: Install Dependencies 📦
         run: npm ci
         
+      - name: Update public/index.html 🔧
+        run: |
+          sed -i 's|<meta name="viewport" content="width=device-width, initial-scale=1.0">|<meta name="viewport" content="width=device-width, initial-scale=1.0">\n    <base href="%PUBLIC_URL%/" />|' public/index.html
+          cat public/index.html
+        
       - name: Build 🏗️
         run: npm run build
         env:
           PUBLIC_URL: /TimeSchedule
+          CI: false  # Prevent treating warnings as errors
         
+      - name: Check build output 🔍
+        run: |
+          ls -la build
+          cat build/index.html | head -20
+          
       - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           folder: build
           branch: gh-pages
+          clean: true  # Automatically remove deleted files
