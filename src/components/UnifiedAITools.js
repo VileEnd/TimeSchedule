@@ -619,24 +619,6 @@ const UnifiedAITools = () => {
           </p>
         </div>
         
-        <div className="mb-4">
-          <div className="flex items-center">
-            <input
-              type="checkbox"
-              id="useExistingSchedule"
-              name="useExistingSchedule"
-              checked={formValues.useExistingSchedule}
-              onChange={handleChange}
-              className="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded"
-            />
-            <label htmlFor="useExistingSchedule" className="ml-2 block text-sm text-gray-700 dark:text-gray-300">
-              Use existing schedule as context
-            </label>
-          </div>
-          <p className="text-xs text-gray-500 dark:text-gray-400 ml-6 mt-1">
-            When checked, AI will consider your current schedule when creating a new one
-          </p>
-        </div>
         
         <div className="mt-8 flex justify-end">
           <button
@@ -668,16 +650,29 @@ const UnifiedAITools = () => {
           placeholder="I work Monday to Friday from 9 AM to 5 PM. I have a gym class on Tuesday and Thursday at 6 PM for 1 hour. I need to study Spanish for at least 3 hours spread across the week..."
           rows={6}
         />
-        <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-          Describe your routine, commitments, and preferences in detail. The AI will create a complete weekly schedule.
+        <div className="flex items-center mt-2">
+          <input
+            type="checkbox"
+            id="useExistingSchedule"
+            name="useExistingSchedule"
+            checked={formValues.useExistingSchedule}
+            onChange={handleChange}
+            className="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded"
+          />
+          <label htmlFor="useExistingSchedule" className="ml-2 block text-sm text-gray-700 dark:text-gray-300">
+            Use existing schedule as context
+          </label>
           {formValues.useExistingSchedule && (
             <span className="inline-flex items-center ml-2 text-purple-500">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 mr-1" viewBox="0 0 20 20" fill="currentColor">
                 <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
               </svg>
-              Using current schedule as context
+              Active
             </span>
           )}
+        </div>
+        <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 ml-6">
+          When checked, AI will consider your current schedule when creating a new one
         </p>
       </div>
       
@@ -747,14 +742,31 @@ const UnifiedAITools = () => {
         />
         <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
           Enter a public calendar URL (must be publicly accessible). From Google Calendar, go to Settings > Settings for my calendars > [Select calendar] > Integrate calendar > Public URL to this calendar.
+        </p>
+        
+        <div className="flex items-center mt-2">
+          <input
+            type="checkbox"
+            id="useExistingScheduleCalendar"
+            name="useExistingSchedule"
+            checked={formValues.useExistingSchedule}
+            onChange={handleChange}
+            className="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded"
+          />
+          <label htmlFor="useExistingScheduleCalendar" className="ml-2 block text-sm text-gray-700 dark:text-gray-300">
+            Use existing schedule as fallback
+          </label>
           {formValues.useExistingSchedule && (
             <span className="inline-flex items-center ml-2 text-purple-500">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 mr-1" viewBox="0 0 20 20" fill="currentColor">
                 <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
               </svg>
-              Using current schedule as fallback
+              Active
             </span>
           )}
+        </div>
+        <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 ml-6">
+          When checked, AI will use your current schedule if calendar import fails
         </p>
       </div>
       
@@ -812,21 +824,6 @@ const UnifiedAITools = () => {
       <div className="mb-3">
         <p className="text-sm text-gray-700 dark:text-gray-300 mb-3">
           Optimize your current schedule with AI to create the perfect learning blocks and improve productivity.
-          {formValues.useExistingSchedule ? (
-            <span className="inline-flex items-center ml-2 text-purple-500">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 mr-1" viewBox="0 0 20 20" fill="currentColor">
-                <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
-              </svg>
-              Using current schedule
-            </span>
-          ) : (
-            <span className="inline-flex items-center ml-2 text-orange-500">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 mr-1" viewBox="0 0 20 20" fill="currentColor">
-                <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-              </svg>
-              Starting with empty schedule
-            </span>
-          )}
         </p>
 
         <div className="mb-4">
