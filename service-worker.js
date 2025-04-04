@@ -105,17 +105,18 @@ self.addEventListener('message', event => {
   
   // Show notification when AI processing is complete
   if (event.data && event.data.type === 'AI_COMPLETE') {
-    self.registration.showNotification('AI Processing Complete', {
-      body: event.data.message || 'Your AI-generated schedule is ready to review.',
+    self.registration.showNotification('AI Schedule Creation', {
+      body: event.data.message || 'AI has finished creating your schedule.',
       icon: './icons/icon_x192.png',
       badge: './icons/icon_x192.png',
       tag: 'ai-notification',
       actions: [
-        { action: 'view', title: 'View Schedule' }
+        { action: 'view', title: 'View Now' }
       ],
       data: {
         url: self.location.origin + '?viewAiSchedule=true'
-      }
+      },
+      vibrate: [200, 100, 200]
     });
   }
   
