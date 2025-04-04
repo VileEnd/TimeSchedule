@@ -20,7 +20,7 @@ const EnhancedPomodoroTimer = ({ activity, onClose }) => {
     resetTimerForCurrentMode();
     
     // Setup audio
-    audioRef.current = new Audio(`./public/sounds/${settings.alarmSound}.mp3`);
+    audioRef.current = new Audio(`/sounds/${settings.alarmSound}.mp3`);
     audioRef.current.volume = settings.alarmVolume;
     
     return () => {

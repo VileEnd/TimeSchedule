@@ -8,6 +8,13 @@ const DEFAULT_API_CONFIG = {
   effort: 'high'
 };
 
+// Available models
+export const AVAILABLE_MODELS = [
+  { value: 'o3-mini', label: 'o3-mini (OpenAI)', description: 'Efficient model for basic scheduling' },
+  { value: 'gpt-4o-mini', label: 'GPT-4o Mini (OpenAI)', description: 'Compact version with good performance' },
+  { value: 'gpt-4o', label: 'GPT-4o (OpenAI)', description: 'Most powerful model for complex scheduling' }
+];
+
 /**
  * Create an OpenAI client with the user's API key
  * @param {string} apiKey - User's OpenAI API key

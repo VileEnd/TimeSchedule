@@ -12,7 +12,9 @@ export const AISettingsProvider = ({ children }) => {
     model: 'o3-mini',
     effort: 'high',
     hasTestedConnection: false,
-    isConnectionValid: false
+    isConnectionValid: false,
+    calendarUrl: '',
+    schedulePrompt: ''
   });
   
   const [isLoading, setIsLoading] = useState(false);
@@ -42,11 +44,19 @@ export const AISettingsProvider = ({ children }) => {
     const settingsToSave = {
       isEnabled: settings.isEnabled,
       model: settings.model,
-      effort: settings.effort
+      effort: settings.effort,
+      calendarUrl: settings.calendarUrl,
+      schedulePrompt: settings.schedulePrompt
     };
     
     localStorage.setItem('aiSettings', JSON.stringify(settingsToSave));
-  }, [settings.isEnabled, settings.model, settings.effort]);
+  }, [
+    settings.isEnabled, 
+    settings.model, 
+    settings.effort, 
+    settings.calendarUrl, 
+    settings.schedulePrompt
+  ]);
 
   // Test the OpenAI connection
   const testConnection = async () => {

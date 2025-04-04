@@ -210,9 +210,11 @@ const AISettingsModal = ({ onClose }) => {
               onChange={handleChange}
               className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-purple-500 focus:border-purple-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
             >
-              <option value="o3-mini">o3-mini</option>
+              <option value="o3-mini">o3-mini (OpenAI)</option>
+              <option value="gpt-4o-mini">GPT-4o Mini (OpenAI)</option>
+              <option value="gpt-4o">GPT-4o (OpenAI)</option>
             </select>
-            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Currently only o3-mini is supported</p>
+            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Select the AI model to use for generating schedules</p>
           </div>
           
           <div className="mb-4">
@@ -223,14 +225,17 @@ const AISettingsModal = ({ onClose }) => {
               name="effort"
               value={formValues.effort}
               onChange={handleChange}
-              className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-purple-500 focus:border-purple-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+              disabled={formValues.model !== 'o3-mini'}
+              className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-purple-500 focus:border-purple-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white disabled:opacity-60 disabled:cursor-not-allowed"
             >
               <option value="high">High</option>
               <option value="medium">Medium</option>
               <option value="low">Low</option>
             </select>
             <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-              High effort produces better quality schedules
+              {formValues.model === 'o3-mini' 
+                ? 'High effort produces better quality schedules' 
+                : 'Reasoning effort is only available with the Claude-3 Opus Mini model'}
             </p>
           </div>
           
