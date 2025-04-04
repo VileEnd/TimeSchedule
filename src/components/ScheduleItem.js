@@ -1,5 +1,6 @@
 import React from 'react';
 import { getTypeColor, calculateDuration } from '../utils.js';
+import ExpandableDetails from './ExpandableDetails.js';
 
 const ScheduleItem = ({ item, index, onEdit, onDelete, onPomodoroClick }) => {
   const duration = calculateDuration(item.start_time, item.end_time);
@@ -72,11 +73,12 @@ const ScheduleItem = ({ item, index, onEdit, onDelete, onPomodoroClick }) => {
         </span>
       </div>
       <div className="text-sm text-gray-600 dark:text-gray-300 flex justify-between items-center flex-wrap">
-        <span className="mr-2 details-text">
+        <span className="mr-2 details-text flex-grow">
           {item.details ? (
-            <span dangerouslySetInnerHTML={{ 
-              __html: item.details.replace(/Pomodoro[s]?/gi, '<strong class="text-indigo-600 dark:text-indigo-400 font-semibold">$&</strong>') 
-            }} />
+            <ExpandableDetails 
+              details={item.details.replace(/Pomodoro[s]?/gi, '<strong class="text-indigo-600 dark:text-indigo-400 font-semibold">$&</strong>')}
+              className="text-gray-600 dark:text-gray-300"
+            />
           ) : (
             <i className="text-gray-400 dark:text-gray-500">No details</i>
           )}

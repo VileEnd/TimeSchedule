@@ -80,6 +80,9 @@ export const generateICS = (scheduleData, daysOfWeek) => {
   nextMonday.setDate(now.getDate() + daysUntilNextMonday);
   nextMonday.setHours(0, 0, 0, 0);
 
+  // Process the schedule data to ensure overnight activities are properly represented
+  // The data is already split when loaded/saved, so we don't need to split it again here
+  
   daysOfWeek.forEach((day, dayIndex) => {
     if (scheduleData[day] && scheduleData[day].length > 0) {
       const targetDate = new Date(nextMonday);
@@ -105,7 +108,10 @@ export const generateICS = (scheduleData, daysOfWeek) => {
         const endDate = new Date(targetDate);
         endDate.setHours(endH, endM, 0, 0);
 
-        if (endDate <= startDate) {
+        // Handle end time correctly for the split activities
+        // Activities ending at midnight are correctly handled as is
+        // Activities that span midnight have already been split by our splitOvernightSchedules function
+        if (endDate <= startDate && item.end_time !== '00:00') {
           endDate.setDate(endDate.getDate() + 1);
         }
 
@@ -167,9 +173,55 @@ export const generateICS = (scheduleData, daysOfWeek) => {
 };
 
 // Storage operations
+// Function to handle splitting overnight schedules
+export const splitOvernightSchedules = (scheduleData) => {
+  if (!scheduleData) return scheduleData;
+  
+  const newScheduleData = JSON.parse(JSON.stringify(scheduleData)); // Deep clone
+  const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+  
+  daysOfWeek.forEach((day, index) => {
+    const nextDay = daysOfWeek[(index + 1) % 7];
+    
+    if (!newScheduleData[day]) return;
+    
+    // Find activities that go past midnight (primarily Sleep)
+    const activitiesToSplit = newScheduleData[day].filter(activity => {
+      const startMinutes = timeToMinutes(activity.start_time);
+      const endMinutes = timeToMinutes(activity.end_time);
+      return endMinutes <= startMinutes && activity.type === 'Sleep';
+    });
+    
+    // Process each overnight activity
+    activitiesToSplit.forEach(activity => {
+      // Create a copy of the activity for the next day
+      const nextDayActivity = {...activity};
+      
+      // Modify the original activity to end at midnight
+      activity.end_time = '00:00';
+      
+      // Modify the next day activity to start at midnight
+      nextDayActivity.start_time = '00:00';
+      
+      // Add the next day activity to the appropriate day
+      if (!newScheduleData[nextDay]) {
+        newScheduleData[nextDay] = [];
+      }
+      
+      // Add to beginning of next day's schedule
+      newScheduleData[nextDay].unshift(nextDayActivity);
+    });
+  });
+  
+  return newScheduleData;
+};
+
 export const saveToLocalStorage = (scheduleData) => {
   try {
-    localStorage.setItem('weeklyScheduleData', JSON.stringify(scheduleData));
+    // Process schedule data to split overnight activities before saving
+    const processedData = splitOvernightSchedules(scheduleData);
+    
+    localStorage.setItem('weeklyScheduleData', JSON.stringify(processedData));
     console.log("Schedule saved to Local Storage.");
     return true;
   } catch (error) {
@@ -188,6 +240,8 @@ export const loadFromLocalStorage = () => {
         console.warn("Invalid data format in local storage");
         return null;
       }
+      
+      // No need to split again on load as it's saved already split
       return parsedData;
     }
     return null;
@@ -196,4 +250,22 @@ export const loadFromLocalStorage = () => {
     alert("Error reading schedule from browser storage. Data might be corrupted.");
     return null;
   }
+};
+
+/**
+ * Process details string to extract summary and expanded details
+ * @param {string} details - The details string potentially containing "||" separator
+ * @returns {Object} - Object with summary and expandedDetails properties
+ */
+export const processDetailsSections = (details) => {
+  if (!details) return { summary: "", expandedDetails: "" };
+  
+  // Check if the details string contains the separator
+  if (details.includes("||")) {
+    const [summary, expandedDetails] = details.split("||").map(part => part.trim());
+    return { summary, expandedDetails };
+  }
+  
+  // If no separator found, use the entire string as summary
+  return { summary: details, expandedDetails: "" };
 };
