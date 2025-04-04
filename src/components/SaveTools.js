@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSchedule } from '../context/ScheduleContext.js';
 import { generateICS } from '../utils.js';
 
@@ -13,6 +13,18 @@ const SaveTools = () => {
 
   const [isOpen, setIsOpen] = useState(false);
   const [saveFeedback, setSaveFeedback] = useState(false);
+
+  useEffect(() => {
+    // Close modal when ESC key is pressed
+    const handleEscKey = (event) => {
+      if (event.key === 'Escape' && isOpen) {
+        setIsOpen(false);
+      }
+    };
+    
+    document.addEventListener('keydown', handleEscKey);
+    return () => document.removeEventListener('keydown', handleEscKey);
+  }, [isOpen]);
 
   const handleSaveToStorage = () => {
     saveToLocalStorage();
@@ -56,7 +68,7 @@ const SaveTools = () => {
     <div className="relative">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center rounded-full p-1.5 bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white shadow-md hover:shadow-lg transition-all"
+        className="flex items-center rounded-full p-2 bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white shadow-md hover:shadow-lg transition-all"
         aria-label="Save & Export Options"
         title="Save & Export Options"
       >
@@ -66,8 +78,18 @@ const SaveTools = () => {
       </button>
       
       {isOpen && (
-        <div className="fixed sm:absolute right-0 inset-0 sm:inset-auto sm:mt-2 overflow-y-auto max-h-[calc(100vh-4rem)] w-full sm:w-[320px] md:w-[350px] rounded-lg bg-white dark:bg-gray-800 shadow-xl border border-gray-200 dark:border-gray-700 p-4 z-40 dark:text-gray-100">
-          <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 px-2">Save & Export</h3>
+        <div className="fixed sm:absolute right-0 inset-0 sm:inset-auto sm:mt-2 overflow-y-auto max-h-[calc(100vh-4rem)] w-full sm:w-[320px] md:w-[350px] rounded-lg bg-white dark:bg-gray-800 shadow-xl border border-gray-200 dark:border-gray-700 p-4 z-40 dark:text-gray-100 relative">
+          <button
+            type="button"
+            onClick={() => setIsOpen(false)}
+            className="absolute top-3 right-3 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+            aria-label="Close"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+          <h3 className="text-xl font-semibold text-gray-800 dark:text-white mb-4">Save & Export</h3>
           
           <div className="grid grid-cols-1 gap-1">
             <button 

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { usePomodoroSettings } from '../context/PomodoroSettingsContext.js';
 import { useNotification } from '../context/NotificationContext.js';
 
@@ -6,6 +6,24 @@ const PomodoroSettingsModal = ({ onClose }) => {
   const { settings, updateSettings } = usePomodoroSettings();
   const { showSuccess } = useNotification();
   const [formValues, setFormValues] = useState({ ...settings });
+
+  useEffect(() => {
+    // Add event listener for ESC key to close modal
+    const handleEscKey = (event) => {
+      if (event.key === 'Escape') {
+        onClose();
+      }
+    };
+    
+    document.addEventListener('keydown', handleEscKey);
+    return () => document.removeEventListener('keydown', handleEscKey);
+  }, [onClose]);
+
+  const handleBackdropClick = (e) => {
+    if (e.target === e.currentTarget) {
+      onClose();
+    }
+  };
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -23,7 +41,11 @@ const PomodoroSettingsModal = ({ onClose }) => {
   };
 
   return (
-    <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50 overflow-y-auto" style={{padding: '1rem'}}>
+    <div 
+      className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50 overflow-y-auto" 
+      style={{padding: '1rem'}}
+      onClick={handleBackdropClick}
+    >
       <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md dark:bg-gray-800 dark:text-white border border-gray-200 dark:border-gray-700 relative">
         <button
           type="button"
