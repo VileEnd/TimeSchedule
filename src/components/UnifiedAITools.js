@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useAISettings } from '../context/AISettingsContext.js';
 import { useSchedule } from '../context/ScheduleContext.js';
 import { useNotification } from '../context/NotificationContext.js';
+import { useAISchedule } from '../context/AIScheduleContext.js';
 import { generateOptimizedSchedule, AVAILABLE_MODELS } from '../services/OpenAIService.js';
 import { defaultLearningConfig } from '../utils/LearningScheduleAlgorithm.js';
 import { sendAICompleteNotification } from '../services/NotificationService.js';
@@ -10,6 +11,7 @@ const UnifiedAITools = () => {
   const { settings, updateSettings, testConnection, isLoading: isSettingsLoading } = useAISettings();
   const { scheduleData, setScheduleData, saveToLocalStorage, clearAllData } = useSchedule();
   const { showSuccess, showError, showConfirm, showAlert } = useNotification();
+  const { savePendingSchedule } = useAISchedule();
   
   const [isOpen, setIsOpen] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
@@ -23,7 +25,8 @@ const UnifiedAITools = () => {
     model: settings.model,
     effort: settings.effort,
     calendarUrl: settings.calendarUrl || '',
-    schedulePrompt: settings.schedulePrompt || ''
+    schedulePrompt: settings.schedulePrompt || '',
+    useExistingSchedule: settings.useExistingSchedule || false
   });
   
   // UI state
@@ -40,7 +43,8 @@ const UnifiedAITools = () => {
       model: settings.model,
       effort: settings.effort,
       calendarUrl: settings.calendarUrl || '',
-      schedulePrompt: settings.schedulePrompt || ''
+      schedulePrompt: settings.schedulePrompt || '',
+      useExistingSchedule: settings.useExistingSchedule || false
     });
     
     setIsConnectionValid(settings.isConnectionValid);
@@ -173,14 +177,40 @@ const UnifiedAITools = () => {
         window.showAIProcessingMessage();
       }
       
-      // Clear existing data
+      // Capture the current schedule for context
+      const currentScheduleData = {...scheduleData};
+      
+      // Clear existing data only after capturing the current state
       clearAllData();
+      
+      // Check if we should use the existing schedule as context
+      const useExistingContext = formValues.useExistingSchedule;
+      
+      // Check if the current schedule has any data
+      const hasExistingSchedule = useExistingContext && Object.values(currentScheduleData).some(dayActivities => 
+        Array.isArray(dayActivities) && dayActivities.length > 0
+      );
       
       // Custom prompt for the text-based generation
       const textBasedPrompt = `
       Please create a complete weekly schedule based on the following description:
       
       ${formValues.schedulePrompt}
+      
+      ${hasExistingSchedule ? `
+      IMPORTANT: Use the following current schedule as a starting point and modify it according to the description above:
+      
+      ${Object.entries(currentScheduleData)
+        .map(([day, activities]) => {
+          if (!Array.isArray(activities) || activities.length === 0) return '';
+          const dayActivities = activities.map(a => 
+            `- ${a.start_time}-${a.end_time}: ${a.activity} (${a.type})`
+          ).join('\n');
+          return dayActivities ? `${day}:\n${dayActivities}` : '';
+        })
+        .filter(day => day.length > 0)
+        .join('\n\n')}
+      ` : ''}
       
       The schedule should include all activities mentioned and use appropriate time blocks.
       Organize activities by day of the week (Monday through Sunday).
@@ -241,22 +271,18 @@ const UnifiedAITools = () => {
       // Get the model label for display
       const modelLabel = AVAILABLE_MODELS.find(m => m.value === formValues.model)?.label || formValues.model;
       
-      // Send notification that AI processing is complete - before confirmation
+      // Send notification that AI processing is complete
       sendAICompleteNotification(
         `AI has finished creating your schedule with ${totalBlocksAdded} blocks`,
         totalBlocksAdded
       );
+      
+      // Save to pending schedule context
+      savePendingSchedule(freshSchedule, 'text', totalBlocksAdded);
         
-      // Ask user to confirm
-      showConfirm(
-        `${modelLabel} has created a schedule with ${totalBlocksAdded} blocks based on your description. Apply this schedule?`,
-        () => {
-          setScheduleData(freshSchedule);
-          saveToLocalStorage(freshSchedule);
-          showSuccess(`Successfully created schedule with ${totalBlocksAdded} blocks using ${modelLabel}`);
-          setIsOpen(false);
-        }
-      );
+      // Ask user to confirm through UI banner
+      showSuccess(`${modelLabel} has created a schedule with ${totalBlocksAdded} blocks. You can apply it from the banner at the bottom of the screen.`);
+      setIsOpen(false);
     } catch (error) {
       console.error('Error generating schedule from text:', error);
       showError(`Failed to generate schedule: ${error.message}`);
@@ -303,8 +329,19 @@ const UnifiedAITools = () => {
         window.showAIProcessingMessage();
       }
       
-      // Clear existing schedule
+      // Capture the current schedule for context
+      const currentScheduleData = {...scheduleData};
+      
+      // Clear existing schedule only after capturing the current state
       clearAllData();
+      
+      // Check if we should use the existing schedule as context
+      const useExistingContext = formValues.useExistingSchedule;
+      
+      // Check if the current schedule has any data
+      const hasExistingSchedule = useExistingContext && Object.values(currentScheduleData).some(dayActivities => 
+        Array.isArray(dayActivities) && dayActivities.length > 0
+      );
       
       // Build a prompt for AI that includes the calendar URL
       const calendarPrompt = `
@@ -313,7 +350,22 @@ const UnifiedAITools = () => {
       ${formValues.calendarUrl}
       
       This is a public Google Calendar URL in iCal format that anyone can access.
-      Please fetch and parse this calendar data and extract all events for the current week. 
+      Please fetch and parse this calendar data and extract all events for the current week.
+      
+      ${hasExistingSchedule ? `
+      IMPORTANT: If you are unable to directly access the calendar URL, use the following current schedule as a starting point and modify it accordingly:
+      
+      ${Object.entries(currentScheduleData)
+        .map(([day, activities]) => {
+          if (!Array.isArray(activities) || activities.length === 0) return '';
+          const dayActivities = activities.map(a => 
+            `- ${a.start_time}-${a.end_time}: ${a.activity} (${a.type})`
+          ).join('\n');
+          return dayActivities ? `${day}:\n${dayActivities}` : '';
+        })
+        .filter(day => day.length > 0)
+        .join('\n\n')}
+      ` : ''}
       
       Create a schedule that includes these events and organizes them by day of the week (Monday through Sunday).
       If you're unable to directly fetch from the URL, please create a sample weekly calendar with 
@@ -375,22 +427,18 @@ const UnifiedAITools = () => {
       // Get the model label for display
       const modelLabel = AVAILABLE_MODELS.find(m => m.value === formValues.model)?.label || formValues.model;
       
-      // Send notification that AI processing is complete - before confirmation
+      // Send notification that AI processing is complete
       sendAICompleteNotification(
         `AI has finished creating your schedule with ${totalBlocksAdded} blocks from your calendar`,
         totalBlocksAdded
       );
       
-      // Ask user to confirm
-      showConfirm(
-        `${modelLabel} has created a schedule with ${totalBlocksAdded} blocks from your calendar. Apply this schedule?`,
-        () => {
-          setScheduleData(calendarSchedule);
-          saveToLocalStorage(calendarSchedule);
-          showSuccess(`Successfully created schedule with ${totalBlocksAdded} blocks from your calendar using ${modelLabel}`);
-          setIsOpen(false);
-        }
-      );
+      // Save to pending schedule context
+      savePendingSchedule(calendarSchedule, 'calendar', totalBlocksAdded);
+      
+      // Ask user to confirm through UI banner
+      showSuccess(`${modelLabel} has created a schedule with ${totalBlocksAdded} blocks from your calendar. You can apply it from the banner at the bottom of the screen.`);
+      setIsOpen(false);
     } catch (error) {
       console.error('Error generating schedule from calendar:', error);
       showError(`Failed to process calendar: ${error.message}`);
@@ -429,9 +477,12 @@ const UnifiedAITools = () => {
         window.showAIProcessingMessage();
       }
       
+      // Determine whether to include the current schedule as context
+      const inputSchedule = formValues.useExistingSchedule ? scheduleData : {};
+      
       // Call the AI service - always use high effort for o3-mini
       const optimizedSchedule = await generateOptimizedSchedule(
-        scheduleData,
+        inputSchedule,
         config,
         {
           model: formValues.model,
@@ -454,22 +505,18 @@ const UnifiedAITools = () => {
       // Get the model label for display
       const modelLabel = AVAILABLE_MODELS.find(m => m.value === formValues.model)?.label || formValues.model;
       
-      // Send notification that AI processing is complete - before confirmation
+      // Send notification that AI processing is complete
       sendAICompleteNotification(
         `AI has finished optimizing your schedule with ${totalBlocksAdded} study blocks`,
         totalBlocksAdded
       );
       
-      // Ask user to confirm
-      showConfirm(
-        `${modelLabel} has optimized your schedule with ${totalBlocksAdded} study blocks based on learning science. Apply these changes?`,
-        () => {
-          setScheduleData(optimizedSchedule);
-          saveToLocalStorage(optimizedSchedule);
-          showSuccess(`Successfully applied schedule with ${totalBlocksAdded} study blocks optimized by ${modelLabel}`);
-          setIsOpen(false);
-        }
-      );
+      // Save to pending schedule context
+      savePendingSchedule(optimizedSchedule, 'optimize', totalBlocksAdded);
+      
+      // Ask user to confirm through UI banner
+      showSuccess(`${modelLabel} has optimized your schedule with ${totalBlocksAdded} study blocks based on learning science. You can apply it from the banner at the bottom of the screen.`);
+      setIsOpen(false);
     } catch (error) {
       console.error('Error generating AI schedule:', error);
       showError(`Failed to generate AI schedule: ${error.message}`);
@@ -572,6 +619,24 @@ const UnifiedAITools = () => {
           </p>
         </div>
         
+        <div className="mb-4">
+          <div className="flex items-center">
+            <input
+              type="checkbox"
+              id="useExistingSchedule"
+              name="useExistingSchedule"
+              checked={formValues.useExistingSchedule}
+              onChange={handleChange}
+              className="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded"
+            />
+            <label htmlFor="useExistingSchedule" className="ml-2 block text-sm text-gray-700 dark:text-gray-300">
+              Use existing schedule as context
+            </label>
+          </div>
+          <p className="text-xs text-gray-500 dark:text-gray-400 ml-6 mt-1">
+            When checked, AI will consider your current schedule when creating a new one
+          </p>
+        </div>
         
         <div className="mt-8 flex justify-end">
           <button
@@ -605,6 +670,14 @@ const UnifiedAITools = () => {
         />
         <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
           Describe your routine, commitments, and preferences in detail. The AI will create a complete weekly schedule.
+          {formValues.useExistingSchedule && (
+            <span className="inline-flex items-center ml-2 text-purple-500">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
+              </svg>
+              Using current schedule as context
+            </span>
+          )}
         </p>
       </div>
       
@@ -674,6 +747,14 @@ const UnifiedAITools = () => {
         />
         <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
           Enter a public calendar URL (must be publicly accessible). From Google Calendar, go to Settings > Settings for my calendars > [Select calendar] > Integrate calendar > Public URL to this calendar.
+          {formValues.useExistingSchedule && (
+            <span className="inline-flex items-center ml-2 text-purple-500">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
+              </svg>
+              Using current schedule as fallback
+            </span>
+          )}
         </p>
       </div>
       
@@ -731,6 +812,21 @@ const UnifiedAITools = () => {
       <div className="mb-3">
         <p className="text-sm text-gray-700 dark:text-gray-300 mb-3">
           Optimize your current schedule with AI to create the perfect learning blocks and improve productivity.
+          {formValues.useExistingSchedule ? (
+            <span className="inline-flex items-center ml-2 text-purple-500">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
+              </svg>
+              Using current schedule
+            </span>
+          ) : (
+            <span className="inline-flex items-center ml-2 text-orange-500">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+              </svg>
+              Starting with empty schedule
+            </span>
+          )}
         </p>
 
         <div className="mb-4">

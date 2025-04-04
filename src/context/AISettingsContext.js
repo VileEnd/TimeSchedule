@@ -14,7 +14,8 @@ export const AISettingsProvider = ({ children }) => {
     hasTestedConnection: false,
     isConnectionValid: false,
     calendarUrl: '',
-    schedulePrompt: ''
+    schedulePrompt: '',
+    useExistingSchedule: false
   });
   
   const [isLoading, setIsLoading] = useState(false);
@@ -46,7 +47,8 @@ export const AISettingsProvider = ({ children }) => {
       model: settings.model,
       effort: settings.effort,
       calendarUrl: settings.calendarUrl,
-      schedulePrompt: settings.schedulePrompt
+      schedulePrompt: settings.schedulePrompt,
+      useExistingSchedule: settings.useExistingSchedule
     };
     
     localStorage.setItem('aiSettings', JSON.stringify(settingsToSave));
@@ -55,7 +57,8 @@ export const AISettingsProvider = ({ children }) => {
     settings.model, 
     settings.effort, 
     settings.calendarUrl, 
-    settings.schedulePrompt
+    settings.schedulePrompt,
+    settings.useExistingSchedule
   ]);
 
   // Test the OpenAI connection
