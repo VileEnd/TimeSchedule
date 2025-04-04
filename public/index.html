@@ -48,11 +48,84 @@
                             // Stash the event so it can be triggered later
                             deferredPrompt = e;
                             console.log('App can be installed as PWA');
+                            
+                            // Show the install banner after a short delay
+                            setTimeout(() => {
+                                showInstallBanner(deferredPrompt);
+                            }, 2000);
                         });
+                        
+                        // Function to show install banner
+                        function showInstallBanner(promptEvent) {
+                            // Check if the banner already exists (avoid duplicates)
+                            if (document.getElementById('pwa-install-banner')) return;
+                            
+                            // Create install banner
+                            const banner = document.createElement('div');
+                            banner.id = 'pwa-install-banner';
+                            banner.className = 'fixed bottom-0 left-0 right-0 bg-purple-600 text-white p-3 flex justify-between items-center z-50 shadow-lg';
+                            banner.innerHTML = `
+                                <div class="flex items-center">
+                                    <img src="./icons/icon_x48.png" alt="TimeBloc Icon" class="w-10 h-10 mr-3">
+                                    <div>
+                                        <div class="font-bold">Install TimeBloc</div>
+                                        <div class="text-sm">Add to your home screen for easier access</div>
+                                    </div>
+                                </div>
+                                <div class="flex items-center">
+                                    <button id="pwa-install-dismiss" class="mr-2 px-3 py-1 text-white focus:outline-none">
+                                        Later
+                                    </button>
+                                    <button id="pwa-install-button" class="bg-white text-purple-600 px-3 py-1 rounded-md font-medium focus:outline-none">
+                                        Install
+                                    </button>
+                                </div>
+                            `;
+                            
+                            document.body.appendChild(banner);
+                            
+                            // Add slide-in animation
+                            setTimeout(() => {
+                                banner.style.animation = 'slideInUp 0.3s ease-out forwards';
+                            }, 10);
+                            
+                            // Add event listeners to the buttons
+                            document.getElementById('pwa-install-button').addEventListener('click', () => {
+                                // Hide the banner with animation
+                                banner.style.animation = 'slideOutDown 0.3s ease-out forwards';
+                                setTimeout(() => {
+                                    banner.remove();
+                                }, 300);
+                                
+                                // Show the prompt
+                                promptEvent.prompt();
+                                
+                                // Wait for the user to respond to the prompt
+                                promptEvent.userChoice.then((choiceResult) => {
+                                    if (choiceResult.outcome === 'accepted') {
+                                        console.log('User accepted the install prompt');
+                                    } else {
+                                        console.log('User dismissed the install prompt');
+                                    }
+                                });
+                            });
+                            
+                            document.getElementById('pwa-install-dismiss').addEventListener('click', () => {
+                                // Slide out animation
+                                banner.style.animation = 'slideOutDown 0.3s ease-out forwards';
+                                setTimeout(() => {
+                                    banner.remove();
+                                }, 300);
+                            });
+                        }
                         
                         // Listen for the appinstalled event
                         window.addEventListener('appinstalled', (evt) => {
                             console.log('TimeBloc has been installed as a PWA');
+                            // Remove banner if it exists
+                            const banner = document.getElementById('pwa-install-banner');
+                            if (banner) banner.remove();
+                            
                             // Notify the service worker
                             if (registration.active) {
                                 registration.active.postMessage({
@@ -67,6 +140,27 @@
             });
         }
     </script>
+    
+    <!-- Custom CSS for animations -->
+    <style>
+        @keyframes slideInUp {
+            from {
+                transform: translateY(100%);
+            }
+            to {
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes slideOutDown {
+            from {
+                transform: translateY(0);
+            }
+            to {
+                transform: translateY(100%);
+            }
+        }
+    </style>
     
     <!-- AI Processing Message -->
     <script>
