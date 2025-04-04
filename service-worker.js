@@ -1,5 +1,6 @@
 // Service Worker for TimeBloc PWA
-const CACHE_NAME = 'timebloc-cache-v1';
+const CACHE_VERSION = 2; // Increment this number when you make significant changes
+const CACHE_NAME = `timebloc-cache-v${CACHE_VERSION}`;
 
 // Assets to cache when service worker is installed
 const ASSETS_TO_CACHE = [
@@ -41,6 +42,17 @@ self.addEventListener('activate', event => {
       );
     }).then(() => {
       console.log('Service Worker: Claiming clients for version', CACHE_NAME);
+      // After claiming clients, check if we should notify about the update
+      self.clients.matchAll().then(clients => {
+        clients.forEach(client => {
+          // Send message to the client that an update is available
+          client.postMessage({
+            type: 'UPDATE_AVAILABLE',
+            version: CACHE_VERSION
+          });
+        });
+      });
+      
       return self.clients.claim();
     })
   );
@@ -53,6 +65,33 @@ self.addEventListener('fetch', event => {
     return;
   }
   
+  // Network-first strategy for HTML files to ensure users get the latest content
+  if (event.request.url.endsWith('.html') || event.request.url.endsWith('/')) {
+    event.respondWith(
+      fetch(event.request)
+        .then(response => {
+          // Clone the response
+          const responseToCache = response.clone();
+          
+          // Cache the fetched response
+          caches.open(CACHE_NAME)
+            .then(cache => {
+              if (response.status === 200) {
+                cache.put(event.request, responseToCache);
+              }
+            });
+          
+          return response;
+        })
+        .catch(() => {
+          // If network fails, fall back to cache
+          return caches.match(event.request);
+        })
+    );
+    return;
+  }
+  
+  // Cache-first strategy for other assets
   event.respondWith(
     caches.match(event.request)
       .then(cachedResponse => {
@@ -103,8 +142,44 @@ self.addEventListener('message', event => {
     });
   }
   
+  // Handle update request from the client
+  if (event.data && event.data.type === 'CHECK_FOR_UPDATES') {
+    // Force the service worker to activate immediately
+    self.skipWaiting().then(() => {
+      // Notify the client that update is being applied
+      if (event.source) {
+        event.source.postMessage({
+          type: 'UPDATE_ACTIVATED',
+          version: CACHE_VERSION
+        });
+      }
+    });
+  }
+  
+  // Show notification when AI starts processing
+  if (event.data && event.data.type === 'AI_PROCESSING') {
+    self.registration.showNotification('AI Processing', {
+      body: 'AI is analyzing your data and generating your schedule. This may take a minute.',
+      icon: './icons/icon_x192.png',
+      badge: './icons/icon_x192.png',
+      tag: 'ai-processing-notification',
+      silent: true,
+      requireInteraction: true, // Keep the notification visible until user dismisses it
+      data: {
+        inProgress: true
+      }
+    });
+  }
+  
   // Show notification when AI processing is complete
   if (event.data && event.data.type === 'AI_COMPLETE') {
+    // First, close any processing notifications
+    self.registration.getNotifications({tag: 'ai-processing-notification'})
+      .then(notifications => {
+        notifications.forEach(notification => notification.close());
+      });
+    
+    // Then show completion notification
     self.registration.showNotification('AI Schedule Creation', {
       body: event.data.message || 'AI has finished creating your schedule.',
       icon: './icons/icon_x192.png',
