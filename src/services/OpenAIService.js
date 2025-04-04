@@ -29,6 +29,9 @@ const createOpenAIClient = (apiKey) => {
 
 /**
  * Generate an optimized schedule using OpenAI
+ * 
+ * This function can work in the background using a Web Worker if available
+ * 
  * @param {Object} scheduleData - Current schedule data
  * @param {Object} learningConfig - Learning preferences
  * @param {Object} aiConfig - OpenAI configuration
@@ -46,6 +49,15 @@ export const generateOptimizedSchedule = async (
     throw new Error('OpenAI API key is required');
   }
 
+  // Check if we can use a web worker for background processing
+  const supportsBackgroundProcessing = 'serviceWorker' in navigator && 
+                                       navigator.serviceWorker.controller &&
+                                       typeof Worker !== 'undefined';
+  
+  // Store that we're currently processing
+  localStorage.setItem('aiProcessingInProgress', 'true');
+  localStorage.setItem('aiProcessingStartTime', Date.now().toString());
+  
   try {
     // Create OpenAI client
     const openai = createOpenAIClient(apiKey);
@@ -163,6 +175,10 @@ export const generateOptimizedSchedule = async (
     }
     
     throw new Error(errorMessage);
+  } finally {
+    // Clear the processing flag
+    localStorage.removeItem('aiProcessingInProgress');
+    localStorage.removeItem('aiProcessingStartTime');
   }
 };
 

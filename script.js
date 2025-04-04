@@ -882,3 +882,42 @@ document.addEventListener('DOMContentLoaded', () => {
     initializeApp();
 
 });
+
+// Register service worker if supported
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./public/service-worker.js')
+            .then(registration => {
+                console.log('Service worker registered:', registration);
+                
+                // Listen for messages from the service worker
+                navigator.serviceWorker.addEventListener('message', function(event) {
+                    if (event.data && event.data.type === 'UPDATE_AVAILABLE') {
+                        console.log('Update available for version:', event.data.version);
+                        showUpdateNotification(event.data.version);
+                    } else if (event.data && event.data.type === 'UPDATE_ACTIVATED') {
+                        console.log('Update activated for version:', event.data.version);
+                        // Reload the page to activate the new service worker
+                        window.location.reload();
+                    } else if (event.data && event.data.type === 'BACKGROUND_SYNC_COMPLETE') {
+                        console.log('Background sync completed:', event.data);
+                        // Check if we need to refresh the UI
+                        checkForPendingAISchedule();
+                    }
+                });
+            })
+            .catch(error => {
+                console.error('Service worker registration failed:', error);
+            });
+    });
+    
+    // Function to check for pending AI schedule
+    function checkForPendingAISchedule() {
+        const pendingSchedule = localStorage.getItem('pendingAISchedule');
+        if (pendingSchedule) {
+            console.log('Found pending AI schedule, refreshing UI...');
+            // The page will load the schedule from localStorage
+            window.location.reload();
+        }
+    }
+}

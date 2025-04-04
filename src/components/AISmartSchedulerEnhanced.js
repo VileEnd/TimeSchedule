@@ -338,6 +338,7 @@ const AISmartSchedulerEnhanced = () => {
           onChange={(e) => setApiKey(e.target.value)}
           className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-purple-500 focus:border-purple-500"
           placeholder="sk-..."
+          autoComplete="new-password"
           required
         />
         <p className="text-xs text-gray-500 mt-1">

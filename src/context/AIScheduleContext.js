@@ -15,9 +15,13 @@ export const AIScheduleProvider = ({ children }) => {
   
   // Check local storage for any saved pending schedules on initialization
   useEffect(() => {
+    // Load pending schedule data
     const savedPendingSchedule = localStorage.getItem('pendingAISchedule');
     const savedPendingSource = localStorage.getItem('pendingAISource');
     const savedTotalBlocks = localStorage.getItem('pendingAITotalBlocks');
+    
+    // Check for pending notification data from service worker
+    const pendingNotification = localStorage.getItem('pendingAINotification');
     
     if (savedPendingSchedule) {
       try {
@@ -28,8 +32,60 @@ export const AIScheduleProvider = ({ children }) => {
         console.error('Error loading pending AI schedule:', error);
         clearPendingSchedule();
       }
+    } else if (pendingNotification) {
+      // If there's no pending schedule but there is a notification,
+      // show a system message about a lost schedule
+      try {
+        const notificationData = JSON.parse(pendingNotification);
+        console.log('Found pending notification without schedule data', notificationData);
+        
+        // Check if notification is less than 24 hours old
+        const notificationTime = notificationData.timestamp || 0;
+        const currentTime = Date.now();
+        const timeDiff = currentTime - notificationTime;
+        
+        // Only show the message if the notification is recent (less than 24 hours old)
+        if (timeDiff < 24 * 60 * 60 * 1000) {
+          // Could implement a UI indicator here that a schedule was created but not available
+          console.log('Recent AI schedule notification found, but schedule data is missing');
+        } else {
+          // Clean up old notification data
+          localStorage.removeItem('pendingAINotification');
+        }
+      } catch (error) {
+        console.error('Error parsing pending notification data:', error);
+        localStorage.removeItem('pendingAINotification');
+      }
     }
+    
+    // Add event listener for app visibility changes to recheck storage
+    document.addEventListener('visibilitychange', checkPendingOnVisibilityChange);
+    
+    // Clean up event listener on unmount
+    return () => {
+      document.removeEventListener('visibilitychange', checkPendingOnVisibilityChange);
+    };
   }, []);
+  
+  // Function to check pending schedule data when visibility changes
+  const checkPendingOnVisibilityChange = () => {
+    if (document.visibilityState === 'visible') {
+      const savedPendingSchedule = localStorage.getItem('pendingAISchedule');
+      if (savedPendingSchedule && !pendingSchedule) {
+        // If there's a pending schedule in storage but not in state, load it
+        try {
+          const savedPendingSource = localStorage.getItem('pendingAISource');
+          const savedTotalBlocks = localStorage.getItem('pendingAITotalBlocks');
+          
+          setPendingSchedule(JSON.parse(savedPendingSchedule));
+          setPendingSource(savedPendingSource || '');
+          setTotalBlocks(parseInt(savedTotalBlocks || '0', 10));
+        } catch (error) {
+          console.error('Error loading pending AI schedule on visibility change:', error);
+        }
+      }
+    }
+  };
   
   // Save pending schedule to local storage
   const savePendingSchedule = (schedule, source, blocks) => {

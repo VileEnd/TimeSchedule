@@ -17,7 +17,13 @@
     "react-sortablejs": "^6.1.4",
     "react-use": "^17.4.0",
     "sortablejs": "^1.15.2",
-    "web-vitals": "^3.5.2"
+    "web-vitals": "^3.5.2",
+    "workbox-background-sync": "^7.3.0",
+    "workbox-core": "^7.3.0",
+    "workbox-expiration": "^7.3.0",
+    "workbox-routing": "^7.3.0",
+    "workbox-strategies": "^7.3.0",
+    "workbox-window": "^7.3.0"
   },
   "scripts": {
     "start": "NODE_OPTIONS=--openssl-legacy-provider react-scripts start",

@@ -3,9 +3,72 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Interactive Weekly Schedule</title>
+    <title>TimeBloc Schedule Planner</title>
+    <meta name="theme-color" content="#8b5cf6">
+    <meta name="description" content="Interactive weekly schedule planner with AI assistance">
+    
+    <!-- iOS PWA Support -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="TimeBloc">
+    
+    <!-- iOS icons -->
+    <link rel="apple-touch-icon" href="public/icons/apple-touch-icon.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="public/icons/apple-touch-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="167x167" href="public/icons/apple-touch-icon-167x167.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="public/icons/apple-touch-icon-180x180.png">
+    
+    <!-- iOS dark mode icons -->
+    <link rel="apple-touch-icon" sizes="152x152" href="public/icons/apple-touch-icon-dark-152x152.png" media="(prefers-color-scheme: dark)">
+    <link rel="apple-touch-icon" sizes="167x167" href="public/icons/apple-touch-icon-dark-167x167.png" media="(prefers-color-scheme: dark)">
+    <link rel="apple-touch-icon" sizes="180x180" href="public/icons/apple-touch-icon-dark-180x180.png" media="(prefers-color-scheme: dark)">
+    
+    <!-- PWA manifest -->
+    <link rel="manifest" href="public/manifest.json">
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js" integrity="sha512-Eezs+g9Lq4TCCq0wae01s97zDyA+DzMusshrpnxn/ZmzDEXR9XH9dHdlPFMXWA7oChJo9GfMrtemJ/pxPDzTRaQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    
+    <!-- Update notification handling -->
+    <script>
+        // Function to show update notification
+        function showUpdateNotification(version) {
+            const updateBanner = document.createElement('div');
+            updateBanner.className = 'fixed inset-x-0 top-0 p-4 bg-blue-600 text-white flex justify-between items-center z-50';
+            updateBanner.innerHTML = `
+                <div>
+                    <strong>Update Available!</strong> A new version (${version}) of TimeBloc is available.
+                </div>
+                <div class="flex space-x-2">
+                    <button id="update-later-btn" class="px-3 py-1 bg-blue-700 hover:bg-blue-800 rounded">Later</button>
+                    <button id="update-now-btn" class="px-3 py-1 bg-green-600 hover:bg-green-700 rounded">Update Now</button>
+                </div>
+            `;
+            
+            document.body.prepend(updateBanner);
+            
+            // Add event listeners
+            document.getElementById('update-later-btn').addEventListener('click', () => {
+                updateBanner.remove();
+            });
+            
+            document.getElementById('update-now-btn').addEventListener('click', () => {
+                // Send message to service worker to apply update
+                if (navigator.serviceWorker && navigator.serviceWorker.controller) {
+                    navigator.serviceWorker.controller.postMessage({
+                        type: 'CHECK_FOR_UPDATES'
+                    });
+                    
+                    updateBanner.innerHTML = `
+                        <div class="w-full text-center">
+                            <strong>Updating...</strong> The app will refresh when ready.
+                        </div>
+                    `;
+                }
+            });
+        }
+    </script>
     <style>
         /* Style for active tab */
         .tab-active {

@@ -165,6 +165,7 @@ const AISettingsModal = ({ onClose }) => {
                 onChange={handleChange}
                 className="flex-1 p-2 border border-gray-300 rounded-l-md shadow-sm focus:ring-purple-500 focus:border-purple-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                 placeholder="sk-..."
+                autoComplete="new-password"
               />
               <button
                 type="button"
