@@ -93,4 +93,19 @@ self.addEventListener('message', event => {
   if (event.data && event.data.type === 'SKIP_WAITING') {
     self.skipWaiting();
   }
+  
+  // Show notification when app is installed
+  if (event.data && event.data.type === 'APP_INSTALLED') {
+    self.registration.showNotification('TimeBloc Installed', {
+      body: 'TimeBloc has been successfully installed as an app. You can now access it from your home screen!',
+      icon: './icons/icon_x192.png',
+      badge: './icons/icon_x192.png'
+    });
+  }
+});
+
+// Handle the beforeinstallprompt event
+self.addEventListener('appinstalled', (event) => {
+  // Log the installation to analytics
+  console.log('TimeBloc was installed as a PWA');
 });

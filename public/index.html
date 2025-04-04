@@ -14,6 +14,9 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="TimeBloc">
     
+    <!-- Push notification permissions -->
+    <meta name="permissions" content="notifications,push">
+    
     <!-- iOS splash screens -->
     <link rel="apple-touch-startup-image" media="screen and (device-width: 1024px) and (device-height: 1366px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" href="%PUBLIC_URL%/splash/splash_2048x2732.png">
     <link rel="apple-touch-startup-image" media="screen and (device-width: 834px) and (device-height: 1194px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" href="%PUBLIC_URL%/splash/splash_1668x2388.png">
@@ -36,12 +39,61 @@
                 navigator.serviceWorker.register('./service-worker.js')
                     .then(function(registration) {
                         console.log('Service Worker registered with scope:', registration.scope);
+                        
+                        // Setup beforeinstallprompt event to track when PWA can be installed
+                        let deferredPrompt;
+                        window.addEventListener('beforeinstallprompt', (e) => {
+                            // Prevent Chrome 67 and earlier from automatically showing the prompt
+                            e.preventDefault();
+                            // Stash the event so it can be triggered later
+                            deferredPrompt = e;
+                            console.log('App can be installed as PWA');
+                        });
+                        
+                        // Listen for the appinstalled event
+                        window.addEventListener('appinstalled', (evt) => {
+                            console.log('TimeBloc has been installed as a PWA');
+                            // Notify the service worker
+                            if (registration.active) {
+                                registration.active.postMessage({
+                                    type: 'APP_INSTALLED'
+                                });
+                            }
+                        });
                     })
                     .catch(function(error) {
                         console.log('Service Worker registration failed:', error);
                     });
             });
         }
+    </script>
+    
+    <!-- AI Processing Message -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Function to show AI processing message
+            window.showAIProcessingMessage = function() {
+                let processingDiv = document.createElement('div');
+                processingDiv.id = 'ai-processing-message';
+                processingDiv.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
+                processingDiv.innerHTML = `
+                    <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-xl max-w-md mx-4 text-center">
+                        <div class="animate-spin mb-4 mx-auto h-12 w-12 border-4 border-purple-500 border-t-transparent rounded-full"></div>
+                        <h3 class="text-lg font-bold text-gray-800 dark:text-white mb-2">AI is processing your request</h3>
+                        <p class="text-gray-600 dark:text-gray-300">Please wait while the AI analyzes your data and generates your schedule. This may take up to 60 seconds.</p>
+                    </div>
+                `;
+                document.body.appendChild(processingDiv);
+            };
+            
+            // Function to hide AI processing message
+            window.hideAIProcessingMessage = function() {
+                let processingDiv = document.getElementById('ai-processing-message');
+                if (processingDiv) {
+                    processingDiv.remove();
+                }
+            };
+        });
     </script>
 </body>
 </html>

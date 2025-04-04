@@ -85,6 +85,11 @@ const AISmartSchedulerEnhanced = () => {
       // Show feedback that we're connecting to OpenAI
       showSuccess('Connecting to OpenAI and generating schedule from your description... This may take 30-60 seconds.', 10000);
       
+      // Show AI processing overlay message if function exists
+      if (window.showAIProcessingMessage) {
+        window.showAIProcessingMessage();
+      }
+      
       // First clear existing data
       clearAllData();
       
@@ -147,6 +152,11 @@ const AISmartSchedulerEnhanced = () => {
       showError(`Failed to generate schedule: ${error.message}`);
     } finally {
       setIsGenerating(false);
+      
+      // Hide AI processing message if function exists
+      if (window.hideAIProcessingMessage) {
+        window.hideAIProcessingMessage();
+      }
     }
   };
 
@@ -164,6 +174,11 @@ const AISmartSchedulerEnhanced = () => {
       
       // Show feedback
       showSuccess('Fetching calendar data and generating schedule... This may take 30-60 seconds.', 10000);
+      
+      // Show AI processing overlay message if function exists
+      if (window.showAIProcessingMessage) {
+        window.showAIProcessingMessage();
+      }
       
       // First try to fetch the calendar data - using the API directly is problematic due to CORS
       // Instead, we'll skip the fetch and use the URL directly in the prompt
@@ -238,6 +253,11 @@ const AISmartSchedulerEnhanced = () => {
       showError(`Failed to process calendar: ${error.message}`);
     } finally {
       setIsGenerating(false);
+      
+      // Hide AI processing message if function exists
+      if (window.hideAIProcessingMessage) {
+        window.hideAIProcessingMessage();
+      }
     }
   };
 
@@ -255,6 +275,11 @@ const AISmartSchedulerEnhanced = () => {
       
       // Show feedback that we're connecting to OpenAI
       showSuccess('Connecting to OpenAI and generating optimized schedule... This may take 30-60 seconds.', 10000);
+      
+      // Show AI processing overlay message if function exists
+      if (window.showAIProcessingMessage) {
+        window.showAIProcessingMessage();
+      }
       
       // Call the OpenAI service
       const optimizedSchedule = await generateOptimizedSchedule(
@@ -293,6 +318,11 @@ const AISmartSchedulerEnhanced = () => {
       showError(`Failed to generate AI schedule: ${error.message}`);
     } finally {
       setIsGenerating(false);
+      
+      // Hide AI processing message if function exists
+      if (window.hideAIProcessingMessage) {
+        window.hideAIProcessingMessage();
+      }
     }
   };
 
