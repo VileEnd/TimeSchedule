@@ -96,6 +96,22 @@
   "theme_color": "#8b5cf6",
   "background_color": "#f3f4f6",
   "scope": ".",
+  "shortcuts": [
+    {
+      "name": "AI Schedule",
+      "short_name": "AI Schedule",
+      "description": "Generate a new AI-powered schedule",
+      "url": "/?ai=new",
+      "icons": [{ "src": "./icons/icon_x192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "View Schedule",
+      "short_name": "View",
+      "description": "View your weekly schedule",
+      "url": "/",
+      "icons": [{ "src": "./icons/icon_x192.png", "sizes": "192x192" }]
+    }
+  ],
   "description": "An interactive weekly schedule planner with calendar export, drag and drop reordering, and Pomodoro timer.",
   "screenshots": [
     {

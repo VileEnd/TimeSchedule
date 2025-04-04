@@ -1,5 +1,5 @@
 // Service Worker for TimeBloc PWA
-const CACHE_VERSION = 4; // Increment this number when you make significant changes
+const CACHE_VERSION = 5; // Increment this number when you make significant changes
 const CACHE_NAME = `timebloc-cache-v${CACHE_VERSION}`;
 const BASE_URL = self.location.origin;
 
