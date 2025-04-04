@@ -102,10 +102,89 @@ self.addEventListener('message', event => {
       badge: './icons/icon_x192.png'
     });
   }
+  
+  // Show notification when AI processing is complete
+  if (event.data && event.data.type === 'AI_COMPLETE') {
+    self.registration.showNotification('AI Processing Complete', {
+      body: event.data.message || 'Your AI-generated schedule is ready to review.',
+      icon: './icons/icon_x192.png',
+      badge: './icons/icon_x192.png',
+      tag: 'ai-notification',
+      actions: [
+        { action: 'view', title: 'View Schedule' }
+      ],
+      data: {
+        url: self.location.origin + '?viewAiSchedule=true'
+      }
+    });
+  }
+  
+  // Show notification for current task
+  if (event.data && event.data.type === 'CURRENT_TASK') {
+    self.registration.showNotification('Current Task Reminder', {
+      body: `${event.data.taskName} - ${event.data.timeRange}`,
+      icon: './icons/icon_x192.png',
+      badge: './icons/icon_x192.png',
+      tag: 'task-notification',
+      actions: [
+        { action: 'startTimer', title: 'Start Timer' }
+      ],
+      data: {
+        taskId: event.data.taskId,
+        url: self.location.origin + '?startTimer=' + event.data.taskId
+      }
+    });
+  }
+  
+  // Generic notification sender
+  if (event.data && event.data.type === 'SHOW_NOTIFICATION') {
+    self.registration.showNotification(event.data.title, {
+      body: event.data.body,
+      icon: './icons/icon_x192.png',
+      badge: './icons/icon_x192.png',
+      tag: event.data.tag || 'generic-notification',
+      actions: event.data.actions || [],
+      data: event.data.data || {}
+    });
+  }
 });
 
 // Handle the beforeinstallprompt event
 self.addEventListener('appinstalled', (event) => {
   // Log the installation to analytics
   console.log('TimeBloc was installed as a PWA');
+});
+
+// Handle notification click events
+self.addEventListener('notificationclick', event => {
+  const notification = event.notification;
+  notification.close();
+  
+  // Handle different notification actions
+  if (event.action === 'startTimer') {
+    // Client will handle the timer start action
+    clients.openWindow(notification.data.url);
+  } else if (event.action === 'view') {
+    // Open the window to view AI schedule
+    clients.openWindow(notification.data.url);
+  } else {
+    // Default action for click on notification body
+    const urlToOpen = notification.data && notification.data.url 
+      ? notification.data.url 
+      : self.location.origin;
+    
+    // Focus if already open or open new window
+    event.waitUntil(
+      clients.matchAll({type: 'window'}).then(clientList => {
+        for (const client of clientList) {
+          if (client.url === urlToOpen && 'focus' in client) {
+            return client.focus();
+          }
+        }
+        if (clients.openWindow) {
+          return clients.openWindow(urlToOpen);
+        }
+      })
+    );
+  }
 });
