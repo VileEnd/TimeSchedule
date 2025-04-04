@@ -78,6 +78,16 @@
       "src": "icons/icon_x512.png",
       "sizes": "512x512",
       "type": "image/png"
+    },
+    {
+      "src": "icons/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/apple-touch-icon-dark-180x180.png",
+      "sizes": "180x180",
+      "type": "image/png"
     }
   ],
   "start_url": "/TimeSchedule/",
@@ -89,17 +99,22 @@
   "description": "An interactive weekly schedule planner with calendar export, drag and drop reordering, and Pomodoro timer.",
   "screenshots": [
     {
-      "src": "screenshots/desktop.png",
+      "src": "./screenshots/desktop.png",
       "sizes": "1280x800",
       "type": "image/png",
       "form_factor": "wide"
     },
     {
-      "src": "screenshots/mobile.png",
+      "src": "./screenshots/mobile.png",
       "sizes": "750x1334",
       "type": "image/png",
       "form_factor": "narrow"
     }
   ],
-  "categories": ["productivity", "utilities", "lifestyle"]
+  "categories": ["productivity", "utilities", "lifestyle"],
+  "apple-touch-icon": "icons/apple-touch-icon.png",
+  "apple-mobile-web-app-capable": "yes",
+  "mobile-web-app-capable": "yes",
+  "apple-mobile-web-app-status-bar-style": "black-translucent",
+  "apple-mobile-web-app-title": "TimeBloc"
 }

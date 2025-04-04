@@ -1,13 +1,13 @@
 {
   "files": {
-    "main.css": "/TimeSchedule/static/css/main.e065acd2.css",
-    "main.js": "/TimeSchedule/static/js/main.e49ef2c8.js",
+    "main.css": "/TimeSchedule/static/css/main.c2bdce39.css",
+    "main.js": "/TimeSchedule/static/js/main.dce01119.js",
     "index.html": "/TimeSchedule/index.html",
-    "main.e065acd2.css.map": "/TimeSchedule/static/css/main.e065acd2.css.map",
-    "main.e49ef2c8.js.map": "/TimeSchedule/static/js/main.e49ef2c8.js.map"
+    "main.c2bdce39.css.map": "/TimeSchedule/static/css/main.c2bdce39.css.map",
+    "main.dce01119.js.map": "/TimeSchedule/static/js/main.dce01119.js.map"
   },
   "entrypoints": [
-    "static/css/main.e065acd2.css",
-    "static/js/main.e49ef2c8.js"
+    "static/css/main.c2bdce39.css",
+    "static/js/main.dce01119.js"
   ]
 }
