@@ -35,10 +35,95 @@
     <script>
         // Register service worker for PWA functionality
         if ('serviceWorker' in navigator) {
+            let refreshing = false;
+            
+            // Handle update notifications from the service worker
+            navigator.serviceWorker.addEventListener('message', function(event) {
+                if (event.data && event.data.type === 'UPDATE_AVAILABLE') {
+                    console.log('Update available for version:', event.data.version);
+                    showUpdateNotification(event.data.version);
+                }
+                
+                if (event.data && event.data.type === 'UPDATE_ACTIVATED') {
+                    console.log('Update activated for version:', event.data.version);
+                    if (!refreshing) {
+                        refreshing = true;
+                        // Refresh the page to load new assets
+                        window.location.reload();
+                    }
+                }
+            });
+            
+            // Register service worker
             window.addEventListener('load', function() {
                 navigator.serviceWorker.register('./service-worker.js')
                     .then(function(registration) {
                         console.log('Service Worker registered with scope:', registration.scope);
+                        
+                        // Check for updates periodically
+                        setInterval(() => {
+                            registration.update();
+                        }, 60 * 60 * 1000); // Check for updates every hour
+                        
+                        // Show update notification if needed
+                        function showUpdateNotification(version) {
+                            // Check if notification already exists
+                            if (document.getElementById('pwa-update-banner')) return;
+                            
+                            const banner = document.createElement('div');
+                            banner.id = 'pwa-update-banner';
+                            banner.className = 'fixed bottom-4 left-4 right-4 bg-purple-600 text-white p-3 flex justify-between items-center z-50 shadow-lg rounded-lg';
+                            banner.innerHTML = `
+                                <div class="flex items-center">
+                                    <div class="bg-white rounded-full p-1 mr-3">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <div class="font-bold">Update Available</div>
+                                        <div class="text-sm">A new version of TimeBloc is ready to install</div>
+                                    </div>
+                                </div>
+                                <div class="flex items-center">
+                                    <button id="pwa-update-dismiss" class="mr-2 px-3 py-1 text-white focus:outline-none">
+                                        Later
+                                    </button>
+                                    <button id="pwa-update-button" class="bg-white text-purple-600 px-3 py-1 rounded-md font-medium focus:outline-none">
+                                        Update Now
+                                    </button>
+                                </div>
+                            `;
+                            
+                            document.body.appendChild(banner);
+                            
+                            // Add slide-in animation
+                            setTimeout(() => {
+                                banner.style.animation = 'slideInUp 0.3s ease-out forwards';
+                            }, 10);
+                            
+                            // Add event listeners to the buttons
+                            document.getElementById('pwa-update-button').addEventListener('click', () => {
+                                // Hide the banner with animation
+                                banner.style.animation = 'slideOutDown 0.3s ease-out forwards';
+                                setTimeout(() => {
+                                    banner.remove();
+                                }, 300);
+                                
+                                // Request the service worker to activate the update
+                                navigator.serviceWorker.controller.postMessage({
+                                    type: 'CHECK_FOR_UPDATES'
+                                });
+                            });
+                            
+                            document.getElementById('pwa-update-dismiss').addEventListener('click', () => {
+                                // Slide out animation
+                                banner.style.animation = 'slideOutDown 0.3s ease-out forwards';
+                                setTimeout(() => {
+                                    banner.remove();
+                                }, 300);
+                            });
+                        }
                         
                         // Setup beforeinstallprompt event to track when PWA can be installed
                         let deferredPrompt;

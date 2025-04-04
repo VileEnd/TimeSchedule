@@ -28,6 +28,24 @@ export const getNotificationPermission = () => {
   return Notification.permission;
 };
 
+// Send a notification when AI processing starts
+export const sendAIProcessingNotification = async () => {
+  if (!isNotificationsSupported()) return false;
+  
+  const registration = await navigator.serviceWorker.ready;
+  if (!registration.active) return false;
+  
+  try {
+    registration.active.postMessage({
+      type: 'AI_PROCESSING'
+    });
+    return true;
+  } catch (error) {
+    console.error('Error sending AI processing notification:', error);
+    return false;
+  }
+};
+
 // Send a notification when AI processing is complete
 export const sendAICompleteNotification = async (message, totalBlocksAdded) => {
   if (!isNotificationsSupported()) return false;
@@ -105,6 +123,7 @@ export default {
   isNotificationsSupported,
   requestNotificationPermission,
   getNotificationPermission,
+  sendAIProcessingNotification,
   sendAICompleteNotification,
   sendCurrentTaskNotification,
   sendNotification,

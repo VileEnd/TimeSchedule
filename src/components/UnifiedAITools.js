@@ -5,7 +5,7 @@ import { useNotification } from '../context/NotificationContext.js';
 import { useAISchedule } from '../context/AIScheduleContext.js';
 import { generateOptimizedSchedule, AVAILABLE_MODELS } from '../services/OpenAIService.js';
 import { defaultLearningConfig } from '../utils/LearningScheduleAlgorithm.js';
-import { sendAICompleteNotification } from '../services/NotificationService.js';
+import { sendAICompleteNotification, sendAIProcessingNotification } from '../services/NotificationService.js';
 
 const UnifiedAITools = () => {
   const { settings, updateSettings, testConnection, isLoading: isSettingsLoading } = useAISettings();
@@ -160,6 +160,9 @@ const UnifiedAITools = () => {
     try {
       setIsGenerating(true);
       
+      // Send notification that AI processing has started
+      sendAIProcessingNotification();
+      
       // Save the prompt to settings first
       updateSettings({ schedulePrompt: formValues.schedulePrompt });
       
@@ -312,6 +315,9 @@ const UnifiedAITools = () => {
     try {
       setIsGenerating(true);
       
+      // Send notification that AI processing has started
+      sendAIProcessingNotification();
+      
       // Save the calendar URL to settings first
       updateSettings({ calendarUrl: formValues.calendarUrl });
       
@@ -462,6 +468,9 @@ const UnifiedAITools = () => {
 
     try {
       setIsGenerating(true);
+      
+      // Send notification that AI processing has started
+      sendAIProcessingNotification();
       
       // Use existing API key from settings or temporary one from form
       const keyToUse = settings.apiKey || formValues.apiKey;
