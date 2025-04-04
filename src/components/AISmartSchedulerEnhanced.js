@@ -90,6 +90,14 @@ const AISmartSchedulerEnhanced = () => {
         window.showAIProcessingMessage();
       }
       
+      // Send push notification for background processing
+      try {
+        const { sendAIProcessingNotification } = await import('../services/NotificationService.js');
+        await sendAIProcessingNotification();
+      } catch (error) {
+        console.error('Failed to send AI processing notification:', error);
+      }
+      
       // First clear existing data
       clearAllData();
       
@@ -157,6 +165,15 @@ const AISmartSchedulerEnhanced = () => {
       if (window.hideAIProcessingMessage) {
         window.hideAIProcessingMessage();
       }
+      
+      // Send completion notification that will work even when app is in background
+      try {
+        const { sendAICompleteNotification } = await import('../services/NotificationService.js');
+        const message = `AI has created a schedule with ${totalBlocksAdded} blocks based on your description. Ready to review!`;
+        await sendAICompleteNotification(message, totalBlocksAdded);
+      } catch (error) {
+        console.error('Failed to send AI completion notification:', error);
+      }
     }
   };
 
@@ -178,6 +195,14 @@ const AISmartSchedulerEnhanced = () => {
       // Show AI processing overlay message if function exists
       if (window.showAIProcessingMessage) {
         window.showAIProcessingMessage();
+      }
+      
+      // Send push notification for background processing
+      try {
+        const { sendAIProcessingNotification } = await import('../services/NotificationService.js');
+        await sendAIProcessingNotification();
+      } catch (error) {
+        console.error('Failed to send AI processing notification:', error);
       }
       
       // First try to fetch the calendar data - using the API directly is problematic due to CORS
@@ -258,6 +283,15 @@ const AISmartSchedulerEnhanced = () => {
       if (window.hideAIProcessingMessage) {
         window.hideAIProcessingMessage();
       }
+      
+      // Send completion notification that will work even when app is in background
+      try {
+        const { sendAICompleteNotification } = await import('../services/NotificationService.js');
+        const message = `AI has created a schedule with ${totalBlocksAdded} blocks based on your description. Ready to review!`;
+        await sendAICompleteNotification(message, totalBlocksAdded);
+      } catch (error) {
+        console.error('Failed to send AI completion notification:', error);
+      }
     }
   };
 
@@ -279,6 +313,14 @@ const AISmartSchedulerEnhanced = () => {
       // Show AI processing overlay message if function exists
       if (window.showAIProcessingMessage) {
         window.showAIProcessingMessage();
+      }
+      
+      // Send push notification for background processing
+      try {
+        const { sendAIProcessingNotification } = await import('../services/NotificationService.js');
+        await sendAIProcessingNotification();
+      } catch (error) {
+        console.error('Failed to send AI processing notification:', error);
       }
       
       // Call the OpenAI service
@@ -322,6 +364,15 @@ const AISmartSchedulerEnhanced = () => {
       // Hide AI processing message if function exists
       if (window.hideAIProcessingMessage) {
         window.hideAIProcessingMessage();
+      }
+      
+      // Send completion notification that will work even when app is in background
+      try {
+        const { sendAICompleteNotification } = await import('../services/NotificationService.js');
+        const message = `AI has created a schedule with ${totalBlocksAdded} blocks based on your description. Ready to review!`;
+        await sendAICompleteNotification(message, totalBlocksAdded);
+      } catch (error) {
+        console.error('Failed to send AI completion notification:', error);
       }
     }
   };
