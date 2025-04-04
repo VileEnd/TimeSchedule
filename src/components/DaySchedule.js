@@ -103,7 +103,6 @@ const DaySchedule = () => {
           {currentDay}'s Schedule
         </h2>
         <div className="flex space-x-3">
-          <LearningTimeMenu />
           <button 
             onClick={handleAddActivity}
             className="bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white font-bold py-2 px-4 rounded-full shadow-md hover:shadow-lg flex items-center transition-all"
@@ -114,6 +113,7 @@ const DaySchedule = () => {
             </svg>
             Add Activity
           </button>
+          <LearningTimeMenu />
         </div>
       </div>
       

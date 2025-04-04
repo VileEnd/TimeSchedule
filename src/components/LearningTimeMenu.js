@@ -80,17 +80,18 @@ const LearningTimeMenu = () => {
     <div className="relative">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="bg-purple-500 hover:bg-purple-600 text-white font-bold py-2 px-3 rounded-full transition-colors flex items-center shadow-md hover:shadow-lg"
+        className="bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white font-bold py-2 px-4 rounded-full shadow-md hover:shadow-lg flex items-center transition-all"
         aria-expanded={isOpen}
         title="Learning Blocks"
       >
-        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
         </svg>
+        Learning Blocks
       </button>
       
       {isOpen && (
-        <div className="fixed sm:absolute inset-0 sm:inset-auto sm:right-0 max-h-[calc(100vh-4rem)] overflow-y-auto sm:left-auto sm:mt-2 sm:mx-0 w-full sm:w-[320px] md:w-[350px] bg-white rounded-lg shadow-xl z-30 p-4 border border-gray-200 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100 relative">
+        <div className="fixed sm:absolute inset-0 sm:inset-auto sm:right-0 max-h-[calc(100vh-4rem)] overflow-y-auto sm:left-auto sm:mt-2 sm:mx-0 w-full sm:w-[320px] md:w-[350px] bg-white rounded-lg shadow-lg p-6 z-40 border border-gray-200 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100 relative">
           <button
             type="button"
             onClick={() => setIsOpen(false)}
@@ -101,9 +102,9 @@ const LearningTimeMenu = () => {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
-          <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-3">
-            Auto Learning Block Settings
-          </h3>
+          <h2 className="text-xl font-semibold text-gray-800 dark:text-white mb-4">
+            Learning Block Settings
+          </h2>
           
           <div className="mb-3">
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
@@ -216,10 +217,10 @@ const LearningTimeMenu = () => {
             </div>
           </div>
           
-          <div className="flex justify-end space-x-3 mt-4">
+          <div className="flex justify-end space-x-3 mt-6">
             <button
               onClick={() => setIsOpen(false)}
-              className="px-4 py-2 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400 transition-colors dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600"
+              className="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition-colors dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600"
             >
               Cancel
             </button>
